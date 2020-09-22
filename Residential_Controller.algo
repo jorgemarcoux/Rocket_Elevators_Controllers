@@ -1,0 +1,63 @@
+SEQUENCE elevator_A status is on_service
+  SET max_weight TO 1000
+  SET current_weight TO 0
+  SET current_floor TO current_floor
+  SET idle_time TO 0
+  SET doors_status TO closed
+  SET door_closing_path_clear TO true
+  SET overload to false
+  SET elevator_is_moving TO false
+
+
+***ELEVATOR & DOORS CONTROLS***
+
+//Going up or down//
+ IF requested_floor is greater than current_floor THEN
+   CALL going_up
+   SET elevator_is_moving TO true
+ ELSE
+   CALL going_down
+   SET elevator_is_moving TO true
+ ENDIF
+
+
+//Start moving//
+ IF doors_status equals TO closed AND requested_floor equals TO true AND overload equals TO false THEN
+   CALL going_up OR CALL going_down
+   SET elevator_is_moving TO true
+ ENDIF
+
+
+//Closing doors//
+ IF close_door_button is pressed AND door_closing_path_clear equals TO true AND overload equals TO false THEN
+   SET doors_status TO closed
+ ENDIF
+
+//Open doors//
+ IF elevator_is_moving does not equal TO true AND current_floor equals to requested_floor THEN
+   SET doors_status TO open
+ ENDIF
+
+
+//Checking weight//
+ IF current_weight is less than max_weight THEN
+   SET overload TO false
+ ELSE
+   SET overload TO true
+   DISPLAY 'There is an overload'
+   CALL overload_sound
+   SET doors_status TO open
+ ENDIF
+
+
+//Idle time//
+ IF idle_time is greater than 5 minutes THEN
+  SET current_floor TO 1
+ ENDIF
+
+***CALL BUTTONS***
+
+
+
+
+***FLOOR REQUEST BUTTONS***
