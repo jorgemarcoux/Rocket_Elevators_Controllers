@@ -130,22 +130,26 @@ SEQUENCE floor_requested_button USING requested_floor
    ENDIF
 ENDSEQUENCE
 
-//Answering and deleting requested floors//
+***COLUMN***
+
+WHILE column IS on_service
+
+//Completing and deleting requested floors//
 WHILE InternalList ARRAY OR queue_requested_floors ARRAY IS GREATER THAN 0 AND elevator status IS on_service
-  SEQUENCE answering_floor_requests USING InternalList ARRAY AND queue_requested_floors ARRAY
-    IF current_item ON InternalList ARRAY EQUALS TO current_floor THEN
+  SEQUENCE completing_floor_requests USING InternalList ARRAY AND queue_requested_floors ARRAY
+    IF current_item IN InternalList ARRAY EQUALS TO current_floor THEN
       CALL stop
       CALL open_doors
       DELETE current item from InternalList ARRAY 
       CALL sending_elevator
-    ELSEIF current_item ON queue_requested_floors ARRAY EQUALS TO current_floor THEN
+    ELSEIF current_item IN queue_requested_floors ARRAY EQUALS TO current_floor THEN
       CALL stop
       CALL open_doors
-      DELETE current item from queue_requested_floors ARRAY
       CALL sending_elevator
     ENDIF
   ENDSEQUENCE
 ENDWHILE
+
 
 //Sending elevator logic//
 SEQUENCE sending_elevator USING queue_requested_floors ARRAY, InternalList ARRAY elevator_status, current_floor, elevator_is_moving, elevator1 OR elevator2 going_up OR going_down  
@@ -155,19 +159,36 @@ SEQUENCE sending_elevator USING queue_requested_floors ARRAY, InternalList ARRAY
 ENDSEQUENCE
 
 
-SEQUENCE next_request_to_answer USING queue_requested_floors ARRAY, InternalList ARRAY AND current_floor
- CASE 1 
-  IF going_up AND next_item ON queue_requested_floors ARRAY MINUS current_floor IS LESS THAN next_item on InternalList ARRAY MINUS current_floor THEN
-    answer queue_requested_floors ARRAY
+SEQUENCE next_request_to_answer USING queue_requested_floors ARRAY, InternalList ARRAY, best_elevator AND current_floor
+  FOR EACH item IN queue_requested_floors ARRAY AND IN InternalList ARRAY
+   CASE best_elevator OF
+    elevator1_up OR 1: 
+     IF going_up AND next_item IN queue_requested_floors ARRAY MINUS current_floor IS LESS THAN next_item IN InternalList ARRAY MINUS current_floor THEN
+       answer current_item IN queue_requested_floors ARRAY
+       ADD current item from queue_requested_floors ARRAY TO InternalList ARRAY
+       DELETE current item from queue_requested_floors ARRAY
+     ELSEIF going_up AND next_item IN InternalList ARRAY MINUS current_floor MINUS THAN   next_item IN queue_requested_floors ARRAY MINUS current_floor THEN
+       answer current_item IN InternalList ARRAY
+     ENDIF
+   CASE elevator1_down OR 2:
 
- CASE 2 going_down and answer internalList
- CASE 3 going_up AND answer queue_requested_floors ARRAY
- CASE 4 going_down AND queue_requested_floors ARRAY
+
+   CASE elevator2_up OR 3:
+
+
+   CASE elevator2_down OR 4:
+
+
+     
+    
+
   ELSE
     answer InternalList ARRAY
   ENDIF
 ENDSEQUENCE
 
+
+ENDWHILE
 
 
 WHILE elevator_status EQUALS TO on_service
@@ -193,14 +214,20 @@ ENDWHILE
 
 
 
+
+
 TO DO:
 1.Check if other elevator already answered to next element in array
-2. if element in array queue already visited (active), then delte it and push or add other items
-3.Add 1 array with where the elevetaor was called from with direction AND other with requested floor button AND THEN take desicions comparin those 2 arrays?? or to just create one and handle all the data from there?
+
 4.Add 'while column 1 status == online' to perform all the steps ONLY when the column is on.
-5.Check logique moving up or down
-6.Check button up AND other button down.
+
+6. Check button up AND other button down.
 7. Add emergency button
+8. Add var amount of elevators on top
+9. Add var # of floors on top
+10.Init column 
+11. Send 1 elevator to 1st étage et l'autre a total etages / 2 + 1
+
 
 //Exemple queue_requested_floors array//
 queue_requested_floors [

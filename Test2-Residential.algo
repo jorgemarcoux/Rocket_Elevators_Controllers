@@ -1,0 +1,54 @@
+-------------BUTTONS REQUEST ELEVATRO UP & DOWN----------
+ SEQUENCE elevator_requested USING call_elevator_button_down OR call_elevator_button_up
+   IF call_elevator_button_up IS PRESSED THEN
+     READ call_from_floor
+     SET new ElevatorCall WITH call_from_floor AND Direction UP
+     ADD ElevatorCall TO queue_requested_floors ARRAY
+     SORT queue_requested_floors ARRAY (descending)
+   ELSE call_elevator_button_down IS PRESSED THEN
+     READ call_from_floor
+     SET new ElevatorCall WITH call_from_floor AND Direction DOWN
+     ADD ElevatorCall TO queue_requested_floors ARRAY
+     SORT queue_requested_floors ARRAY (ascending)
+ ENDSEQUENCE
+ ----------------------------------------------------
+ 
+ -------------BUTTONS REQUESTED FLOOR----------------
+
+ SEQUENCE floor_requested USING requested_floor_buttons
+  FOR EACH elevator ON column
+    READ requested_floor_button
+    ADD TO InternalList ARRAY
+    IF elevator IS going_up THEN
+     SORT InternalList ARRAY (descending)
+    ELSE
+     SORT InternalList ARRAY (ascending)
+    ENDIF
+  ENDFOR
+ENDSEQUENCE
+-------------------------------------------------------
+
+-------------SEND ELEVATOR LOGIC-----------------------
+
+FOR EACH column IN total_columns
+  FOR EACH elevator IN column
+    READ current_item IN InternalList ARRAY
+    GO TO requested_floor
+    WHILE current_item IN queue_requested_floors ARRAY == current_floor - 2 AND elevator_direction == requested_elevator.Direction THEN
+      Answer queue call
+  ENDFOR
+ENDFOR
+
+-------------------------------------------------------
+
+var floors_gap_elev1 = current_item IN queue - current_floor 
+var floors_gap_elev2 = current_item IN queue - current_floor
+
+IF floors_gap_elev1 < floors_gap_elev2 AND elevator_direction == requested_elevator.Direction THEN
+  SEND elevator1
+ELSE 
+  SEND elevatro2
+
+
+ ----------------------------------------------------
+
