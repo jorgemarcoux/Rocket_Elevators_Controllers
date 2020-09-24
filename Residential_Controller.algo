@@ -77,7 +77,7 @@ FOR EACH column IN total_columns
     FOR EACH item IN queue_requested_floors ARRAY
       CASE asnwering_call_in_queue OF
         CASE 1:
-          floors_gap_elev[i] IS LESS THAN floors_gap_elev[i+1] AND elevator[i]_direction   EQUALS TO ElevatorCall.Direction INSIDE queue_requested_floors ARRAY THEN
+          floors_gap_elev[i] IS LESS THAN floors_gap_elev[i+1] AND elevator[i]_direction EQUALS TO ElevatorCall.Direction INSIDE queue_requested_floors ARRAY THEN
            SEND elevator1
            ADD current_item IN queue_requested_floors ARRAY TO InternalList ARRAY
            CALL sort_internalList
