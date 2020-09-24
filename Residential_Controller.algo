@@ -67,10 +67,10 @@ DEFINE elevator
   ENDSEQUENCE
 
   SEQUENCE get_elevator_direction USING InternalList ARRAY, current_floor AND elevator_is_moving
-    IF current_item IN InternalList ARRAY IS GREATER THAN current_floor THEN
+    IF current_item IN InternalList ARRAY IS GREATER THAN elevator's current_floor THEN
       SET elevator_direction TO UP
       SET elevator_is_moving TO true
-    ELSE current_item IN InternalList ARRAY IS LESS THAN current_floor THEN
+    ELSE current_item IN InternalList ARRAY IS LESS THAN elevator's current_floor THEN
       SET elevator_direction TO DOWN
       SET elevator_is_moving TO true
     ELSE
@@ -86,7 +86,7 @@ DEFINE elevator
   ENDSEQUENCE
 
   SEQUENCE open_doors USING elevator_is_moving, current_floor, InternalList ARRAY AND open_doors_button
-    IF elevator_is_moving IS NOT EQUAL TO true AND current_floor EQUALS TO    requested_floor OR open_doors_button IS PRESSED THEN
+    IF elevator_is_moving IS NOT EQUAL TO true AND elevator's current_floor EQUALS TO    requested_floor OR open_doors_button IS PRESSED THEN
       SET doors_open TO true
     ELSE
       Wait 5 seconds
@@ -104,13 +104,19 @@ DEFINE elevator
     ENDIF
   ENDSEQUENCE
 
-  SEQUENCE floors_gap_elev USING queue_requested_floors ARRAY AND current_floor
+  SEQUENCE get_floors_gap_elev USING queue_requested_floors ARRAY AND elevator's current_floor
     FOR EACH item IN queue_requested_floors ARRAY
       READ current_item
       SET floors_gap_elev TO current_item IN queue_requested_floors ARRAY MINUS elevator's current_floor
+      IF floors_gap_elev IS LESS THAN 0 THEN
+        TRANSFORM to positive number
+      ENDIF
     ENDFOR
   ENDSEQUENCE
-    
+
+  SEQUENCE stop USING elevator_status
+    SET elevator_status TO stop
+  ENDSEQUENCE  
 
 ENDDEFINE
 
@@ -118,7 +124,6 @@ ENDDEFINE
 SEQUENCE elevators USING total_elevators
   [...]
 ENDSEQUENCE
-
 
 --------Defining and creating columns-----------
 DEFINE Columns
@@ -130,7 +135,7 @@ ENDDEFINE
 
 SET column1 TO INSTANTIATE Columns WITH 1, 10, 2 AND on_service
 ----------------------------------
-------Create new elevator call construct-----------
+------Create new elevator call-----------
 
 DEFINE ElevatorCall USING direction AND call_from_floor
   Direction: requested_direction,
@@ -138,7 +143,7 @@ DEFINE ElevatorCall USING direction AND call_from_floor
 ENDDEFINE 
 ------------------------------------------------------
 
--------------BUTTONS REQUEST ELEVATRO UP & DOWN----------
+-------------Request elevator buttons up & down----------
 
 FOR EACH column IN total_columns
 
@@ -148,7 +153,7 @@ FOR EACH column IN total_columns
        SET new ElevatorCall WITH call_from_floor AND Direction UP
        ADD ElevatorCall TO queue_requested_floors ARRAY
        SORT queue_requested_floors ARRAY (descending)
-     ELSE call_elevator_button_down IS PRESSED THEN
+     ELSEIF call_elevator_button_down IS PRESSED THEN
        READ call_from_floor
        SET new ElevatorCall WITH call_from_floor AND Direction DOWN
        ADD ElevatorCall TO queue_requested_floors ARRAY
@@ -181,70 +186,52 @@ SEQUENCE floor_requested USING requested_floor_buttons
 
 ENDSEQUENCE
 -------------------------------------------------------
-
--------------SEND ELEVATOR LOGIC-----------------------
-
-FOR EACH column IN total_columns
-  FOR EACH elevator IN column
-   SEQUENCE deciding_elevator
-
-    FOR EACH item IN queue_requested_floors ARRAY
-      CASE asnwering_call_in_queue OF
-        CASE 1:
-          floors_gap_elev[i] IS LESS THAN floors_gap_elev[i+1] AND elevator[i]_direction EQUALS TO ElevatorCall.Direction INSIDE queue_requested_floors ARRAY THEN
-           SEND elevator1
-           ADD current_item IN queue_requested_floors ARRAY TO InternalList ARRAY
-           CALL sort_internalList
-           DELETE current_item FROM queue_requested_floors ARRAY
-        CASE 2: 
-          floors_gap_elev2 IS LESS THAN floors_gap_elev1 AND elevator2_direction EQUALS  TO ElevatorCall.Direction INSIDE queue_requested_floors ARRAY THEN
-           SEND elevator2
-           ADD current_item IN queue_requested_floors ARRAY TO InternalList ARRAY
-           CALL sort_internalList
-           DELETE current_item FROM queue_requested_floors ARRAY
-        CASE 3:
-          elevator_status1 IS idle OR floors_gap_elev1 IS LESS THAN floors_gap_elev2 THEN
-            SEND elevator1
-            ADD current_item IN queue_requested_floors ARRAY TO InternalList ARRAY
-            CALL sort_internalList
-            DELETE current_item FROM queue_requested_floors ARRAY
-        CASE 4:
-          elevator_status2 IS idle OR floors_gap_elev2 IS LESS THAN floors_gap_elev1 THEN
-            SEND elevator2
-            ADD current_item IN queue_requested_floors ARRAY TO InternalList ARRAY
-            CALL sort_internalList
-            DELETE current_item FROM queue_requested_floors ARRAY
-      ENDCASE 
-    ENDFOR
-   ENDSEQUENCE
-  ENDFOR
-ENDFOR
-
--------------------------------------------------------
 -----------Check elevator direction & requested direction------
 
-SEQUENCE elevator_direction_check_queue USING elevator_direction, deciding_elevator AND current_floor
- IF elevator_direction IS UP AND 1 of 4 deciding_elevator CASES IS true BUT requested_floor < current_floor THEN
-   Ignore request
- ELSE elevator_direction IS going_down AND 1 of 4 deciding_elevator CASES IS true BUT requested_floor > current_floor THEN
-   Ignore request
+SEQUENCE elevator_direction_check_queue USING elevator_direction, deciding_elevator, queue_requested_floors ARRAY AND current_floor
+ IF elevator_direction IS UP AND direction of current item IN queue_requested_floors ARRAY IS UP AND requested_floor of current item IN queue_requested_floors ARRAY < elevator's current_floor THEN
+   DO NOT ADD current_item IN queue_requested_floors ARRAY TO InternalList ARRAY
+ ELSE IF elevator_direction IS going_down AND direction of current item IN queue_requested_floors ARRAY IS DOWN AND requested_floor of current item IN IN queue_requested_floors ARRAY > elevator's current_floor THEN
+   DO NOT ADD current_item IN queue_requested_floors ARRAY TO InternalList ARRAY
  ENDIF
 ENDSEQUENCE
+-------------------------------------------------------
+-------------SENDING ELEVATOR LOGIC-----------------------
+
+SEQUENCE deciding_elevator USING elevator_direction_check_queue
+  
+  WHILE queue_requested_floors ARRAY IS GREATER THAN 0
+    FOR EACH column IN total_columns
+     FOR EACH elevator IN column
+       FOR EACH item IN queue_requested_floors ARRAY
+
+          DETERMINE elevator IN total_elevators ARRAY whose floors_gap_elev IS THE SMALLEST AND whose direction EQUALS TO requested direction OF current item INSIDE queue_requested_floors ARRAY OR whose status IS moving AND whose floors_gap_elev IS THE SMALLEST OR whose status IS idle.
+          ADD current_item IN queue_requested_floors ARRAY TO chosen elevator's InternalList ARRAY
+          CALL sort_internalList
+          REMOVE current_item FROM queue_requested_floors ARRAY 
+
+       ENDFOR
+     ENDFOR
+   ENDFOR
+ ENDWHILE
+
+ENDSEQUENCE
+
 -------------------------------------------------------
 
 -------Answering and deleting calls--------------------
 
-   WHILE InternalList ARRAY OR queue_requested_floors ARRAY IS GREATER THAN 0 AND    elevator_status IS on_service
+   WHILE InternalList ARRAY OR queue_requested_floors ARRAY IS GREATER THAN 0 AND elevator_status IS on_service
 
      SEQUENCE completing_floor_requests USING InternalList ARRAY AND queue_requested_floors ARRAY
       FOR EACH item IN queue_requested_floors ARRAY
-       IF current_item IN InternalList ARRAY EQUALS TO current_floor THEN
+       IF current_item IN InternalList ARRAY EQUALS TO elevator's current_floor THEN
          CALL stop
          CALL open_doors
-         DELETE current item from InternalList ARRAY 
+         REMOVE current item from InternalList ARRAY 
          READ next_item IN InternalList ARRAY
          CALL deciding_elevator
-       ELSEIF current_item IN queue_requested_floors ARRAY EQUALS TO current_floor THEN
+       ELSEIF current_item IN queue_requested_floors ARRAY EQUALS TO elevator's current_floor THEN
          CALL stop
          CALL open_doors
          READ next_item IN InternalList ARRAY
@@ -261,6 +248,7 @@ WHILE column IS on_service
   RUN deciding_elevator
   RUN floor_requested
   RUN sort_internalList
+  RUN elevator_direction_check_queue
 ENDWHILE
 
 
@@ -276,7 +264,6 @@ ENDWHILE
 
 
    
-
 
 
 
