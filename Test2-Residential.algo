@@ -31,3 +31,34 @@ ENDWHILE
 
 
 []
+
+
+----
+À checker:
+
+//Sending elevator logic//
+SEQUENCE sending_elevator USING queue_requested_floors ARRAY, InternalList ARRAY elevator_status, current_floor, elevator_is_moving, elevator1 OR elevator2 going_up OR going_down  
+  IF elevator1 is elevator_is_moving, elevator2 status IS idle AND elevator2 current_floor IS LESS THAN CallFromFloor divided by 5 THEN
+    SET sending_elevator TO elevator2
+
+ENDSEQUENCE
+
+
+SEQUENCE next_request_to_answer USING queue_requested_floors ARRAY, InternalList ARRAY, best_elevator AND current_floor
+  FOR EACH item IN queue_requested_floors ARRAY AND IN InternalList ARRAY
+   CASE best_elevator OF
+    elevator1_up OR 1: 
+     IF going_up AND next_item IN queue_requested_floors ARRAY MINUS current_floor IS LESS THAN next_item IN InternalList ARRAY MINUS current_floor THEN
+       answer current_item IN queue_requested_floors ARRAY
+       ADD current item from queue_requested_floors ARRAY TO InternalList ARRAY
+       DELETE current item from queue_requested_floors ARRAY
+     ELSEIF going_up AND next_item IN InternalList ARRAY MINUS current_floor MINUS THAN   next_item IN queue_requested_floors ARRAY MINUS current_floor THEN
+       answer current_item IN InternalList ARRAY
+     ENDIF
+
+
+     TO DO:
+1.Check if other elevator already answered to next element in array
+7. Add emergency button
+11. Send 1 elevator to 1st étage et l'autre a total etages / 2 + 1
+12. SET popular_floors array to track most used floors. Set idle elevators to those floors.
