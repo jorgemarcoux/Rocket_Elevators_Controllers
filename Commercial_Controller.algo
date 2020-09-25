@@ -1,3 +1,5 @@
+----------------Classic Mehod-------------------------
+
 DEFINE battery USING numberOfColumns AND floorsNumber AND floorGroupsList AND elevatorsPerColumnNumber AND batteryLowestFloor
    columnList: EMPTY list
    status: on_service
@@ -53,7 +55,7 @@ DEFINE Column USING id AND floorsNumber AND minimumFloor AND maximumFloor AND el
   maximumFloor: maximumFloor
   elevatorList: EMPTY LIST
 
-  SEQUENCE createElevatorList USING elevatorsPerColumn 
+  SEQUENCE createElevatorList USING elevatorsPerColumn AND numberOfColumns AND elevatorsPerColumnNumber
      INIT iterator TO 1
      FOR ElevatorsPerColumn
        INIT newElevator TO INSTANTIATE Elevator WITH iterator 
@@ -73,11 +75,28 @@ DEFINE Elevator USING _id
   currentFloor: 1
   maximumWeight: 10000
   doors: Closed
-  requestButtons:
+  requestFloorButtons: EMPTY list
   requestList: EMPTY List
-  buttons:
+
+  SEQUENCE createRquestFloorButtons USING Column
+      INIT iterator TO batteryLowestFloor
+      FOR floorGroupsList
+       IF iterator IS EQUAL TO minimumFloor IN first element OF current item IN Columns AND EQUAL OR LESS THAN maximumFloor IN last element OF current item IN Columns
+         INIT newRquestFloorButton TO INSTANTIATE requestFloorButtons WITH iterator AND 
+         ADD newRquestFloorButton TO callButtonList IN EACH Elevator OF current item IN Columns
+       ENDIF
+        
+           
+          
+        ENDIF
+       ENDIF
+        INCREMENT iterator BY 1
+      ENDFOR
+    ENDSEQUENCE
   
   **Elevator sequences to add from residential****
+
+
 
 ENDDEFINE
 ------------------------------------
@@ -98,9 +117,9 @@ ENDSEQUENCE
 
 
 
-SEQUENCE requestFloor
-
-ENDSEQUENCE
+DEFINE requestFloorButtons
+  **A TERMINER**
+ENDDEFINE
 
 --------------------------
 
