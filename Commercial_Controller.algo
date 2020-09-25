@@ -1,6 +1,7 @@
 ----------------Classic Mehod-------------------------
 
 DEFINE battery USING numberOfColumns AND floorsNumber AND floorGroupsList AND elevatorsPerColumnNumber AND batteryLowestFloor
+
    columnList: EMPTY list
    status: on_service
    callButtonList: EMPTY LIST
@@ -30,17 +31,20 @@ DEFINE battery USING numberOfColumns AND floorsNumber AND floorGroupsList AND el
       ENDFOR
     ENDSEQUENCE
 
-    SEQUENCE callElevator USING requestedFloor
-      CALL findColumn WITH requestedFloor RETURNING column
-      CALL chooseBestElevator OF column RETURNING elevator
-      ADD requestedFloor TO requestList OF elevator
-      CALL moveElevator with elevator
-      CALL openDoors WITH elevator
-    ENDSEQUENCE
 
-    SEQUENCE findColumn USING requestedFloor
-       **COMPLETAR- PARTE IMPORTANTE DEL ALGO**
-       RETURN findColumn
+    SEQUENCE handlingElevatorCalls USING floor OF CallButtons
+
+       FOR EACH Battery
+        FOR EACH Column
+          WHEN a button IN callButtonList IS PRESSED THEN
+            CALL callButtonsList
+            CALL chooseBestElevator OF Column RETURNING best_elevator
+            CALL moveElevator OF Elevator
+            CALL openDoors WITH Elevator
+          ENDWHEN
+        ENDFOR
+       ENDFOR
+
     ENDSEQUENCE
 
     CALL createColumnList WITH numberOfColumns AND elevatorsPerColumnNumber
@@ -48,6 +52,7 @@ DEFINE battery USING numberOfColumns AND floorsNumber AND floorGroupsList AND el
 ENDDEFINE
 --------------------------------------------------------------------------
 DEFINE Column USING id AND floorsNumber AND minimumFloor AND maximumFloor AND elevatorsPerColumn
+
   ID: id
   status: on_service
   floorsNumber: floorsNumber
@@ -64,7 +69,7 @@ DEFINE Column USING id AND floorsNumber AND minimumFloor AND maximumFloor AND el
      ENDFOR
   ENDSEQUENCE
 
-  CALL createElevatorList elevatorsPerColumn
+  CALL createElevatorList USING elevatorsPerColumn
 
 ENDDEFINE
 ------------------------------------------
@@ -74,54 +79,179 @@ DEFINE Elevator USING _id
   status: idle //idle, moving, stopped, offline
   currentFloor: 1
   maximumWeight: 10000
+  currentWeight: currentWeight
   doors: Closed
   requestFloorButtons: EMPTY list
   requestList: EMPTY List
+  floorsGap: floorsGap
+  targetFloorGap: targetFloorGap
+  doorClosingPathClear: true
+  overload: false
+  directionUpCheck: directionUpCheck
+  directionDownCheck: directionDownCheck
 
-  SEQUENCE createRquestFloorButtons USING Column
+  SEQUENCE createRquestFloorButtons USING Column AND floorGroupsList
       INIT iterator TO batteryLowestFloor
       FOR floorGroupsList
-       IF iterator IS EQUAL TO minimumFloor IN first element OF current item IN Columns AND EQUAL OR LESS THAN maximumFloor IN last element OF current item IN Columns
+       IF iterator IS EQUAL TO minimumFloor IN current item IN Columns AND EQUAL OR LESS THAN maximumFloor IN current item IN Columns THEN
+        FOR EACH floor IN current Elevator in elevatorList INSIDE current index OF Column
          INIT newRquestFloorButton TO INSTANTIATE requestFloorButtons WITH iterator AND 
-         ADD newRquestFloorButton TO callButtonList IN EACH Elevator OF current item IN Columns
+         ADD newRquestFloorButton TO requestFloorButtons list IN EACH Elevator OF current item IN Columns
+         INCREMENT iterator BY 1
        ENDIF
-        
-           
-          
-        ENDIF
-       ENDIF
-        INCREMENT iterator BY 1
       ENDFOR
-    ENDSEQUENCE
+  ENDSEQUENCE
+
+ SEQUENCE sortInternalList USING direction
+  IF elevator's direction EQUALS TO up THEN
+    SORT InternalList ARRAY (descending)
+  ELSE
+    SORT InternalList ARRAY (ascending)
+  ENDIF
+ENDSEQUENCE
+
+SEQUENCE addingFloorToInternalList USING requestFloorButtons
+  FOR EACH Battery
+   FOR EACH Column
+    FOR EACH elevatorList
+     FOR EACH Elevator
+      WHEN a button FROM requestFloorButtons list IS PRESSED
+        READ requestFloorButtons
+        ADD to requestList OF current Elevator
+        CALL sort_internalList
+      ENDWHEN
+     ENDFOR
+    ENDFOR
+   ENDFOR
+  ENDFOR
+ENDSEQUENCE
+
+SEQUENCE openDoors USING status AND currentFloor AND InternalList AND open_doors_button
+  IF status IS EQUAL TO moving AND currentFloor EQUALS TO requestedFloor OR open_doors_button IS PRESSED THEN
+    SET openDoors TO true
+  ELSE
+    Wait 5 seconds
+    Check again
+  ENDIF
+ENDSEQUENCE
+
+SEQUENCE moveElevator USING status AND direction
+   WHEN direction EQUALS TO up OR down
+     SET status TO moving
+   ENDWHEN 
+ENDSEQUENCE
+
+SEQUENCE getFloorsGap USING currentFloor AND _floor OF CallButtons
+  FOR EACH Battery
+   FOR EACH Columns
+    FOR EACH elevatorList
+     FOR EACH Elevator
+       SET floorsGap TO DIFFERENCE BETWEEN currentFloot AND _floor OF CallButtons
+     ENDFOR
+    ENDFOR
+   ENDFOR
+  ENDFOR
+ENDSEQUENCE
+
+SEQUENCE getTargetFloorGap USING internalList and currentFloor
+  SET targetFloorGap TO DIFFERENCE BETWEEN current item IN internalList AND requestedFloor IN callButtons
+  IF targetFloorGap IS LESS THAN 0 THEN
+    CONVERT to positive number
+  ENDIF
+ENDSEQUENCE
   
-  **Elevator sequences to add from residential****
+SEQUENCE getCurrentWeight USING weight_sensor
+    SET currentWeight TO READ weight_sensor
+ENDSEQUENCE
 
+SEQUENCE check_door_path USING doors_sensor
+    IF nothing IS BETWEEN doors_sensor THEN
+      SET doorClosingPathClear TO true
+    ELSE
+      SET doorClosingPathClear TO false
+    ENDIF
+  ENDSEQUENCE
 
+SEQUENCE checkOverload USING currentWeight AND maximumWeight
+    IF currentWeight IS LESS than maximumWeight THEN
+      SET overload TO false
+    ELSE
+      SET overload TO true
+      DISPLAY 'There is an overload'
+      CALL overload_sound
+      SET doors_open TO true
+      Wait 5 seconds
+      Check again
+    ENDIF
+ENDSEQUENCE
+
+SEQUENCE ElevatorFloorCheck USING direction OF Elevator AND CallButtons
+
+ IF elevator_direction IS up AND direction IN CallButtons IS up AND floor IN CallButtons IS SMALLER THAN elevator's currentFloor THEN
+   SET directionUpCheck TO false
+ ELSE IF elevator_direction IS down AND direction IN CallButtons IS down AND floor IN CallButtons IS BIGGER THAN elevator's currentFloor THEN
+   SET directionDownCheck TO false
+ ENDIF
+
+ENDSEQUENCE 
+
+CALL createRquestFloorButtons USING floorGroupsList
 
 ENDDEFINE
 ------------------------------------
 DEFINE CallButtons USING direction AND floor
-
   status: off
-  direction: _direction
-  floor: _floor
-
+  direction: direction
+  floor: floor
 ENDDEFINE
 ---------------------------------------
 
+SEQUENCE chooseBestElevator USING CallButtons AND internalList OF Elevator AND targetFloorGap OF Elevator AND FloorGap OF Elevator AND ElevatorFloorCheck OF Elevator
 
-SEQUENCE chooseBestElevator
- 
-  RETURN best_elevator
+   FOR EACH Battery
+    FOR EACH Columns
+     FOR EACH elevatorList
+      FOR EACH Elevator
+
+        WHEN a button up OR down FROM CallButtons IS PRESSED 
+          READ CallButtons
+          CASE sendingElevator OF
+            CASE 1:
+              IF current item IN internalList OR currentFloor EQUALS TO floor IN callButtonList AND Elevator's direction EQUALS TO direction OF current item IN callButtonList AND directionDownCheck OR directionUpCheck EQUAL TO false THEN
+                RETURN chosen Elevator
+              ENDIF
+              IF MORE THAN 1 Elevator meet this criteria THEN
+                READ their floorsGap
+                RETURN the one with THE SMALLEST floorsGap
+            CASE 2:
+              DETERMINE the Elevator THAT has THE SMALLEST floorsGap AND whose direction EQUALS TO direction OF current item IN callButtonList AND directionDownCheck OR directionUpCheck EQUAL TO false
+              IF MORE THAN 1 Elevator meet this criteria THEN
+               READ their targetFloorGap
+               RETURN the one with THE SMALLEST targetFloorGap
+              ENDIF
+            CASE 3:
+              IF NONE of the above CASES IS true THEN 
+                 RETURN Elevator whose status IS idle
+                 IF 2 HAVE the status idle THEN
+                   RETURN the one WITH THE SMALLEST targetFllorGap
+                 ENDIF
+              ENDIF
+          ENDCASE 
+        ENDWHEN
+
+      ENDFOR
+     ENDFOR
+    ENDFOR
+   ENDFOR
+
 ENDSEQUENCE
+------------------------
 
-
-
-DEFINE requestFloorButtons
-  **A TERMINER**
+DEFINE displayFloor
+  PRINT "currentFloor"
 ENDDEFINE
 
---------------------------
+--------------------------------
 
 INIT battery1 TO INSTANTIATE Battery WITH 4, 66,[{-6 TO 1}, {2 TO 20}, {21 TO 40}, {41 TO 60}], 3, -6
 
@@ -131,7 +261,46 @@ SET column2 TO INSTANTIATE Column WITH 20, 1, 20 AND 3
 SET column3 TO INSTANTIATE Column WITH 21, 1, 40 AND 3 
 SET column4 TO INSTANTIATE Column WITH 21, 1, 60 AND 3
 
-SEQUENCE requestFloor
- 
+CALL createRquestFloorButtons WITH column1 AND column2 AND column3 AND column4
 
+SEQUENCE createRquestFloorButtons USING Column OF battery AND Elevator
+ SET requestFloorButtons OF ALL items IN elevatorList IN column1 TO [-6,-5,-4,-3,-2,-1,1] 
+ SET requestFloorButtons OF ALL items IN elevatorList IN column2 TO [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+ SET requestFloorButtons OF ALL items IN elevatorList IN column3 TO [1,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]
+ SET requestFloorButtons OF ALL items IN elevatorList IN column4 TO [1,,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]
 ENDSEQUENCE
+
+CALL createElevatorList WITH 3 AND 4
+
+SEQUENCE createFloorDisplay USING numberOfColumns AND Battery
+  FOREACH Battery
+   FOREACH Columns
+     SET DisplayFloor TO INSTANTIATE displayFloor
+   ENDFOR
+  ENDFOR 
+ENDSEQUENCE
+
+
+SEQUENCE createFloorDisplay USING elevatorsPerColumn AND numberOfColumns AND listOfElevators
+  FOREACH Battery
+   FOREACH Columns
+    FOREACH elevatorList
+     FOREACH Eelevator
+         SET DisplayFloor TO INSTANTIATE displayFloor
+     ENDFOR
+    ENDFOR
+   ENDFOR
+  ENDFOR
+ENDSEQUENCE
+
+
+WHILE Battery status is on_service
+  RUN ALL Battery SEQUENCES
+  RUN ALL Column SEQUENCES
+ENDWHILE
+
+WHILE Elevator status is on_service
+   RUN ALL Elevator SEQUENCES
+ENDWHILE
+
+

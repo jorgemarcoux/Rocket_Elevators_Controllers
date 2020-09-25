@@ -1,4 +1,4 @@
-DEFINE elevator
+DEFINE elevator USING _id
 
   SET id TO: AUTOINCREMENT id,
   SET state TO on_service,
@@ -85,15 +85,6 @@ DEFINE elevator
     ENDIF
   ENDSEQUENCE
 
-  SEQUENCE open_doors USING elevator_is_moving, current_floor, InternalList ARRAY AND open_doors_button
-    IF elevator_is_moving IS NOT EQUAL TO true AND elevator's current_floor EQUALS TO    requested_floor OR open_doors_button IS PRESSED THEN
-      SET doors_open TO true
-    ELSE
-      Wait 5 seconds
-      Check again
-    ENDIF
-  ENDSEQUENCE
-
   SEQUENCE close_doors USING close_door_button, door_closing_path_clear AND overload
     IF close_door_button IS PRESSED AND door_closing_path_clear EQUALS TO true AND  overload EQUALS TO false THEN
       SET doors_open TO false
@@ -107,7 +98,7 @@ DEFINE elevator
   SEQUENCE get_floors_gap_elev USING queue_requested_floors ARRAY AND elevator's current_floor
     FOR EACH item IN queue_requested_floors ARRAY
       READ current_item
-      SET floors_gap_elev TO current_item IN queue_requested_floors ARRAY MINUS elevator's current_floor
+      SET floors_gap_elev TO elevator's current_floor MINUS current_item IN queue_requested_floors ARRAY  
       IF floors_gap_elev IS LESS THAN 0 THEN
         TRANSFORM to positive number
       ENDIF
@@ -153,11 +144,13 @@ FOR EACH column IN total_columns
        SET new ElevatorCall WITH call_from_floor AND Direction UP
        ADD ElevatorCall TO queue_requested_floors ARRAY
        SORT queue_requested_floors ARRAY (descending)
+       CALL deciding_elevator RETURNING elevator
      ELSEIF call_elevator_button_down IS PRESSED THEN
        READ call_from_floor
        SET new ElevatorCall WITH call_from_floor AND Direction DOWN
        ADD ElevatorCall TO queue_requested_floors ARRAY
        SORT queue_requested_floors ARRAY (ascending)
+       CALL deciding_elevator RETURNING elevator
    ENDSEQUENCE
 
 ENDFOR
@@ -217,6 +210,7 @@ SEQUENCE deciding_elevator USING elevator_direction_check_queue
         ADD current_item IN queue_requested_floors ARRAY TO chosen elevator'InternalList ARRAY
         CALL sort_internalList
         REMOVE current_item FROM queue_requested_floors ARRAY 
+        SET elevator_is_moving TO true
 
        ENDFOR
      ENDFOR

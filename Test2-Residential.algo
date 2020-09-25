@@ -49,4 +49,15 @@ SEQUENCE next_request_to_answer USING queue_requested_floors ARRAY, InternalList
 -----------------------
 
 
+------------------------------------------------------------------------------
 
+
+
+
+
+
+
+---------------------------------------------------------------------
+
+    3.REVISAR =IF current item in internalList == floor THAT requested elev with callButtons AND next_item in internalList has same direction (< or >)
+    4.
