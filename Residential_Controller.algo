@@ -121,8 +121,8 @@ DEFINE elevator
 ENDDEFINE
 
 -----------Creating elevators array--------------
-SEQUENCE elevators USING total_elevators
-  [...]
+SEQUENCE creating_elevators USING total_elevators
+  SET total_elevators TO 2
 ENDSEQUENCE
 
 --------Defining and creating columns-----------
@@ -205,10 +205,18 @@ SEQUENCE deciding_elevator USING elevator_direction_check_queue
      FOR EACH elevator IN column
        FOR EACH item IN queue_requested_floors ARRAY
 
-          DETERMINE elevator IN total_elevators ARRAY whose floors_gap_elev IS THE SMALLEST AND whose direction EQUALS TO requested direction OF current item INSIDE queue_requested_floors ARRAY OR whose status IS moving AND whose floors_gap_elev IS THE SMALLEST OR whose status IS idle.
-          ADD current_item IN queue_requested_floors ARRAY TO chosen elevator's InternalList ARRAY
-          CALL sort_internalList
-          REMOVE current_item FROM queue_requested_floors ARRAY 
+        CASE asnwering_call_in_queue OF
+          CASE 1:
+            DETERMINE elevator IN total_elevators ARRAY whose floors_gap_elev IS THE SMALLEST AND whose direction EQUALS TO requested direction OF current item INSIDE queue_requested_floors ARRAY
+            RETURN elevator
+          CASE 2:
+            DETERMINE elevator IN total_elevators ARRAY whose floors_gap_elev IS THE SMALLEST AND status EQUALS TO idle
+            RETURN elevator
+        ENDCASE
+
+        ADD current_item IN queue_requested_floors ARRAY TO chosen elevator'InternalList ARRAY
+        CALL sort_internalList
+        REMOVE current_item FROM queue_requested_floors ARRAY 
 
        ENDFOR
      ENDFOR

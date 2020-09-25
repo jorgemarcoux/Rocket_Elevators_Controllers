@@ -1,2 +1,118 @@
+DEFINE battery USING numberOfColumns AND floorsNumber AND floorGroupsList AND elevatorsPerColumnNumber AND batteryLowestFloor
+   columnList: EMPTY list
+   status: on_service
+   callButtonList: EMPTY LIST
+   
+   SEQUENCE createColumnList USING numberOfColumns AND elevatorsPerColumnNumber
+     INIT iterator TO 1
+     FOR numberOfColumns
+       INIT newColumn TO INSTANTIATE Column WITH iterator AND floorsNumber AND minimumFloor AND maximumFloor AND elevatorsPerColumnNumber
+       ADD newColumn TO ColumnList
+       INCREMENT iterator
+     ENDFOR
+
+    SEQUENCE createCallButtonsList USING batteryLowestFloor AND floorsNumber
+      INIT iterator TO batteryLowestFloor
+      FOR floorsNumber
+       IF iterator IS NOT EQUAL TO 0
+         IF iterator IS LESS THAN 1 THEN
+          INIT newCallButton TO INSTANTIATE CallButtons WITH down AND iterator
+          ADD newCallButton TO callButtonList
+        ENDIF
+        IF iterator IS GREATER THAN 1 THEN
+          INIT newCallButton TO INSTANTIATE CallButtons WITH up AND iterator
+          ADD newCallButton TO callButtonList
+        ENDIF
+       ENDIF
+        INCREMENT iterator BY 1
+      ENDFOR
+    ENDSEQUENCE
+
+    SEQUENCE callElevator USING requestedFloor
+      CALL findColumn WITH requestedFloor RETURNING column
+      CALL chooseBestElevator OF column RETURNING elevator
+      ADD requestedFloor TO requestList OF elevator
+      CALL moveElevator with elevator
+      CALL openDoors WITH elevator
+    ENDSEQUENCE
+
+    SEQUENCE findColumn USING requestedFloor
+       **COMPLETAR- PARTE IMPORTANTE DEL ALGO**
+       RETURN findColumn
+    ENDSEQUENCE
+
+    CALL createColumnList WITH numberOfColumns AND elevatorsPerColumnNumber
+    CALL createCallButtonList WITH batteryLowestFloor AND floorsNumber
+ENDDEFINE
+--------------------------------------------------------------------------
+DEFINE Column USING id AND floorsNumber AND minimumFloor AND maximumFloor AND elevatorsPerColumn
+  ID: id
+  status: on_service
+  floorsNumber: floorsNumber
+  minimumFloor: minimumFloor
+  maximumFloor: maximumFloor
+  elevatorList: EMPTY LIST
+
+  SEQUENCE createElevatorList USING elevatorsPerColumn 
+     INIT iterator TO 1
+     FOR ElevatorsPerColumn
+       INIT newElevator TO INSTANTIATE Elevator WITH iterator 
+       ADD newElevator TO elevatorList
+       INCREMENT iterator
+     ENDFOR
+  ENDSEQUENCE
+
+  CALL createElevatorList elevatorsPerColumn
+
+ENDDEFINE
+------------------------------------------
+DEFINE Elevator USING _id
+  ID: _id
+  direction: None //none, up, down
+  status: idle //idle, moving, stopped, offline
+  currentFloor: 1
+  maximumWeight: 10000
+  doors: Closed
+  requestButtons:
+  requestList: EMPTY List
+  buttons:
+  
+  **Elevator sequences to add from residential****
+
+ENDDEFINE
+------------------------------------
+DEFINE CallButtons USING direction AND floor
+
+  status: off
+  direction: _direction
+  floor: _floor
+
+ENDDEFINE
+---------------------------------------
 
 
+SEQUENCE chooseBestElevator
+ 
+  RETURN best_elevator
+ENDSEQUENCE
+
+
+
+SEQUENCE requestFloor
+
+ENDSEQUENCE
+
+--------------------------
+
+INIT battery1 TO INSTANTIATE Battery WITH 4, 66,[{-6 TO 1}, {2 TO 20}, {21 TO 40}, {41 TO 60}], 3, -6
+
+
+SET column1 TO INSTANTIATE Column WITH 7, -6, 1 AND 3
+SET column2 TO INSTANTIATE Column WITH 20, 1, 20 AND 3 
+SET column3 TO INSTANTIATE Column WITH 21, 1, 40 AND 3 
+SET column4 TO INSTANTIATE Column WITH 21, 1, 60 AND 3
+
+SEQUENCE requestFloor
+ 
+
+ENDSEQUENCE
