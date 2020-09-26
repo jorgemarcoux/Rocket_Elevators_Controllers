@@ -126,6 +126,23 @@ SEQUENCE addingFloorToInternalList USING requestFloorButtons
   ENDFOR
 ENDSEQUENCE
 
+
+SEQUENCE deletingFloorFromInternalList USING requestFloorButtons AND internalList OF Elevator
+
+  FOR EACH Column IN Battery
+   FOR EACH Elevator IN elevatorList
+     IF current item IN InternalList EQUALS TO elevator's currentFloor THEN
+       CALL stop
+       CALL openDoors
+       REMOVE current item from InternalList  
+       READ next item IN InternalList ARRAY
+       CALL chooseBestElevator
+    ENDIF
+  ENDFOR
+ ENDFOR
+
+ENDSEQUENCE
+
 SEQUENCE openDoors USING status AND currentFloor AND InternalList AND open_doors_button
   IF status IS EQUAL TO moving AND currentFloor EQUALS TO requestedFloor OR open_doors_button IS PRESSED THEN
     SET openDoors TO true
@@ -195,6 +212,11 @@ SEQUENCE ElevatorFloorCheck USING direction OF Elevator AND CallButtons
 
 ENDSEQUENCE 
 
+SEQUENCE temporalLogic USING status
+ IF status OF elevator is idle AND day ok week EQUALS TO Monday,Tuesday, Wednesday, Thursday OR Friday AND day time EQUALS 7:50 OR 16:55 THEN
+   SET currentFloor OF Elevator TO minimumFloor OF Column
+ENDSEQUENCE
+
 CALL createRquestFloorButtons USING floorGroupsList
 
 ENDDEFINE
@@ -217,14 +239,14 @@ SEQUENCE chooseBestElevator USING CallButtons AND internalList OF Elevator AND t
           READ CallButtons
           CASE sendingElevator OF
             CASE 1:
-              IF current item IN internalList OR currentFloor EQUALS TO floor IN callButtonList AND Elevator's direction EQUALS TO direction OF current item IN callButtonList AND directionDownCheck OR directionUpCheck EQUAL TO false THEN
+              IF current item IN internalList OR currentFloor EQUALS TO floor IN callButtonList AND Elevator's direction EQUALS TO direction OF current item IN callButtonList AND directionDownCheck OR directionUpCheck EQUAL TO true THEN
                 RETURN chosen Elevator
               ENDIF
               IF MORE THAN 1 Elevator meet this criteria THEN
                 READ their floorsGap
                 RETURN the one with THE SMALLEST floorsGap
             CASE 2:
-              DETERMINE the Elevator THAT has THE SMALLEST floorsGap AND whose direction EQUALS TO direction OF current item IN callButtonList AND directionDownCheck OR directionUpCheck EQUAL TO false
+              DETERMINE the Elevator THAT has THE SMALLEST floorsGap AND whose direction EQUALS TO direction OF current item IN callButtonList AND directionDownCheck OR directionUpCheck EQUAL TO true
               IF MORE THAN 1 Elevator meet this criteria THEN
                READ their targetFloorGap
                RETURN the one with THE SMALLEST targetFloorGap
@@ -233,10 +255,12 @@ SEQUENCE chooseBestElevator USING CallButtons AND internalList OF Elevator AND t
               IF NONE of the above CASES IS true THEN 
                  RETURN Elevator whose status IS idle
                  IF 2 HAVE the status idle THEN
-                   RETURN the one WITH THE SMALLEST targetFllorGap
+                   RETURN the one WITH THE SMALLEST floorsGap
                  ENDIF
               ENDIF
-          ENDCASE 
+          ENDCASE
+          ADD CallButton request TO internalList OF chosen Elevator
+          CALL sortInternalList
         ENDWHEN
 
       ENDFOR
@@ -273,8 +297,8 @@ ENDSEQUENCE
 CALL createElevatorList WITH 3 AND 4
 
 SEQUENCE createFloorDisplay USING numberOfColumns AND Battery
-  FOREACH Battery
-   FOREACH Columns
+  FOR EACH Battery
+   FOR EACH Columns
      SET DisplayFloor TO INSTANTIATE displayFloor
    ENDFOR
   ENDFOR 
@@ -282,10 +306,10 @@ ENDSEQUENCE
 
 
 SEQUENCE createFloorDisplay USING elevatorsPerColumn AND numberOfColumns AND listOfElevators
-  FOREACH Battery
-   FOREACH Columns
-    FOREACH elevatorList
-     FOREACH Eelevator
+  FOR EACH Battery
+   FOR EACH Columns
+    FOR EACH elevatorList
+     FOR EACH Eelevator
          SET DisplayFloor TO INSTANTIATE displayFloor
      ENDFOR
     ENDFOR
