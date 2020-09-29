@@ -7,7 +7,6 @@ class Column{
      this.elevatorsPerColumn = elevatorsPerColumn;
      this.elevatorList = [];
   }
-
      requestedFloorsQueue = [];
 
      //if that works for 1st scenario
@@ -20,10 +19,12 @@ RequestElevator(RequestedFloor, Direction){
 	}
 	}
 };
-
+   //if that works for scenario 3
  RequestElevator2(RequestedFloor, Direction) {
-  	 if(internalList[i] || currentFloor == requestedFloorsQueue[i] && elevator1.directon || elevator2.direction == requestedFloorsQueue[i].direction && directionUpCheck || directionDownCheck == true){
-  	 	console.log(elevator1.id) || console.log(elevator2.id);
+  	 if(elevator1.currentFloor === RequestedFloor && elevator1.direction === Direction){
+  	 	console.log('elevator ' + elevator1.id); 
+  	 }else if(elevator2.currentFloor === RequestedFloor && elevator2.direction === Direction){
+  	 	console.log('elevator ' + elevator2.id);
   	 }
   };
 
@@ -35,7 +36,7 @@ RequestElevator(RequestedFloor, Direction){
 };//closes Column class
 
 class Elevator {
-	constructor(id,column1){
+	constructor(id){
        this.id = id;
 	}
 
@@ -63,21 +64,40 @@ class Elevator {
 
 
  
-/*
- getFloorsGap(requestedFloorsQueue,currentFloor){
- 	for(var i =0; i<=requestedFloorsQueue.lenght, i++)
- 	floorsGap = Math.abs(this.currentFloor-column1.requestedFloorsQueue[i]);
+
+ getFloorsGap(currentFloor,requestedFloorsQueue){
+ 	floorsGap = Math.abs(this.currentFloor-column1.requestedFloorsQueue[0].floor);
  };
 
  getTargetFloorGap(InternalList,currentFloor){
  	targetFloorGap = Math.abs(InternalList-requestedFloorsQueue[i]);
  };
-*/
-/*
- elevatorDirectionQueue(direction,requestedFloorsQueue){
-     if(this.direction=='up')
- }
-*/
+
+
+ elevatorDirectionCheck(Direction,RequestedFloor){
+     if(this.direction =='up' && Direction == 'up')
+     	if(RequestedFloor < this.currentFloor){
+     		directionUpCheck = false;
+     	}else if(RequestedFloor >= this.currentFloor){
+     		directionUpCheck = true;
+     	}
+     else if(this.direction=='down' && Direction == 'down')
+     	if(RequestedFloor > this.currentFloor){
+     		directionDownCheck = false;
+     	}else if(RequestedFloor <= this.currentFloor){
+     		directionDownCheck = true;
+     	}
+ };
+
+ getDirectionUpCheck(Direction,RequestedFloor){
+ 	if(this.direction =='up' && Direction == 'up'){
+     	if(RequestedFloor < this.currentFloor){
+     		directionUpCheck = false;
+        }else{
+        	directionUpCheck = true;
+        }
+        } 
+     };
  
 
 
@@ -85,18 +105,12 @@ class Elevator {
 
 
 
-}//close Elevator class
-
-class CallElevatorButtons {
-	constructor(callFrom,direction){
-      status = 'off';
-      this.callFrom = callFrom;
-      this.direction = direction;//up,down
-	};
+};//close Elevator class
 
 
 
-}//close CallElevatorButtons class
+
+
 
 class RequestFloorButtons {
 	constructor(){
@@ -113,21 +127,39 @@ var elevator1 = new Elevator(1);
 var elevator2 = new Elevator(2);
 
 //*********Scenario 1**********
+/*
 elevator1.status = 'idle';
 elevator1.currentFloor = 2;
 elevator2.status = 'idle';
 elevator2.currentFloor = 6;
 
-var call1 = new CallElevatorButtons(3,'up');
+column1.requestedFloorsQueue.push({'floor':3,'direction':'up'});
 
-column1.requestedFloorsQueue.push(call1);
 
-elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue);
-elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue.callFrom);
-column1.RequestElevator(3,'up');
-//******End scenario 3***********
+elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[0].floor);
+elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[0].floor);
+column1.RequestElevator();
+*/
+//******End scenario 1*******
+//*****Scenario 3**************
 
-//*****Scenario 2**************
+elevator1.status = 'idle';
+elevator1.currentFloor = 10;
+elevator2.status = 'moving';
+elevator2.direction = 'up';
+elevator2.currentFloor = 3;
+elevator2.internalList.push(6);
+
+column1.requestedFloorsQueue.push({'floor':3,'direction':'up'});
+
+elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[0].floor);
+elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[0].floor);
+column1.RequestElevator2(3,'up');
+
+elevator2.getDirectionUpCheck(3,'up');
+
+
+
 
 
 
