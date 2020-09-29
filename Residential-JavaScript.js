@@ -63,7 +63,7 @@ class Elevator {
 
 
  
-
+/*
  getFloorsGap(requestedFloorsQueue,currentFloor){
  	for(var i =0; i<=requestedFloorsQueue.lenght, i++)
  	floorsGap = Math.abs(this.currentFloor-column1.requestedFloorsQueue[i]);
@@ -72,7 +72,7 @@ class Elevator {
  getTargetFloorGap(InternalList,currentFloor){
  	targetFloorGap = Math.abs(InternalList-requestedFloorsQueue[i]);
  };
-
+*/
 /*
  elevatorDirectionQueue(direction,requestedFloorsQueue){
      if(this.direction=='up')
@@ -100,7 +100,7 @@ class CallElevatorButtons {
 
 class RequestFloorButtons {
 	constructor(){
-      status:'off';
+      status:'off'//pressed;
 	};
 
 
@@ -118,10 +118,12 @@ elevator1.currentFloor = 2;
 elevator2.status = 'idle';
 elevator2.currentFloor = 6;
 
-column1.requestedFloorsQueue = 3;
+var call1 = new CallElevatorButtons(3,'up');
 
-elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[i]);
-elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[i]);
+column1.requestedFloorsQueue.push(call1);
+
+elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue);
+elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue.callFrom);
 column1.RequestElevator(3,'up');
 //******End scenario 3***********
 
