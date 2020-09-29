@@ -1,13 +1,4 @@
-switch (bestElevator) {
-	case 1:
-	 if(elevator1.status == 'idle' && elevator2.status == 'idle') {
-	   if(elevator1.floorsGap < elevator2.floorsGap){
-		   console.log('elevator:' + elevator1.id);
-	   }else{
-		console.log('elevator:' + elevator2.id);
-	   }
-	   }
-	break;
-}//end switch
 
-
+//Code Nic pour avoir floorsGap
+elevator2.getFloorsGap(3);
+console.log('floors gap: ',elevator2.floorsGap);
