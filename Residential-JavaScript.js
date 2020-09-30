@@ -9,18 +9,9 @@ class Column{
   }
      requestedFloorsQueue = [];
 
-     //if that works for 1st scenario
-RequestElevator(RequestedFloor, Direction){
-  if(elevator1.status == 'idle' && elevator2.status == 'idle') {
-	if(elevator1.floorsGap < elevator2.floorsGap){
-		console.log('elevator:' + elevator1.id);
-	}else{
-		console.log('elevator:' + elevator2.id);
-	}
-	}
-};
-   //if that works for scenario 3
- RequestElevator2(RequestedFloor, Direction) {
+
+   
+ RequestElevator(RequestedFloor, Direction) {
  	 if(elevator1.status === 'idle' && elevator2.status === 'idle'){
  	 	if(elevator1.floorsGap < elevator2.floorsGap){
  	 		console.log('elevator:' + elevator1.id);
@@ -55,24 +46,22 @@ RequestElevator(RequestedFloor, Direction){
   	 	}
   	 	}
   	 }
-  };
-
-
   
+};
 
 
 
 };//closes Column class
 
 class Elevator {
-	constructor(id,floorsGap,targetFloorGap,directionUpCheck,directionDownCheck){
+	constructor(id){
        this.id = id;
        this.state = 'idle'; //idle, moving, stopped, offline
        this.direction = 'none';//none, up, down
-       this.currentFloor =1;
-       this.floorsGap = floorsGap || 0;
-       this.targetFloorGap = targetFloorGap || 0;
-       this.directionDownCheck = directionDownCheck;
+       this.currentFloor = 1;
+       this.floorsGap;
+       this.targetFloorGap;
+       this.directionDownCheck;
 
 	}
 
@@ -88,58 +77,23 @@ class Elevator {
     overload = false;
 
   
-  RequestFloor(Elevator, RequestedFloor) {
-    //must move the elevators in its treatment.
+  RequestFloor(Elevator,RequestedFloor) {
+    this.internalList.push(RequestedFloor);
+    this.currentFloor == RequestedFloor;
   };
 
-
- 
 
  getFloorsGap(RequestedFloor){
  	this.floorsGap = Math.abs(this.currentFloor-RequestedFloor);
  };
 
- getTargetFloorGap(InternalList,currentFloor){
- 	targetFloorGap = Math.abs(InternalList-requestedFloorsQueue[i]);
+ getTargetFloorGap(internalList,currentFloor){
+ 	targetFloorGap = Math.abs(internalList-RequestedFloor);
  };
-
-/*
- elevatorDirectionCheck(Direction,RequestedFloor){
-     if(this.direction =='up' && Direction == 'up')
-     	if(RequestedFloor < this.currentFloor){
-     		directionUpCheck = false;
-     	}else if(RequestedFloor >= this.currentFloor){
-     		directionUpCheck = true;
-     	}
-     else if(this.direction=='down' && Direction == 'down')
-     	if(RequestedFloor > this.currentFloor){
-     		directionDownCheck = false;
-     	}else if(RequestedFloor <= this.currentFloor){
-     		directionDownCheck = true;
-     	}
- };
-*/
-/*
- getDirectionUpCheck(Direction,RequestedFloor){
- 	if(this.direction =='up' && Direction == 'up'){
- 		return
-     	if(RequestedFloor < this.currentFloor){
-     		return directionUpCheck = false;
-        }else{
-        	return directionUpCheck = true;
-        }
-        } 
-     };
-
-*/
- 
-
-  
 
 
 
 };//close Elevator class
-
 
 
 class RequestFloorButtons {
@@ -156,87 +110,61 @@ var column1 = new Column(1,10,1,10,2,[2]);
 var elevator1 = new Elevator(1);
 var elevator2 = new Elevator(2);
 
-//*********Scenario 1**********
-//EVERYTHING WORKS IN SCENARIO 1
-/*
-elevator1.status = 'idle';
-elevator1.currentFloor = 2;
-elevator2.status = 'idle';
-elevator2.currentFloor = 6;
 
-column1.requestedFloorsQueue.push({'floor':3,'direction':'up'});
+function scenario1() {
+  elevator1.status = 'idle';
+  elevator1.currentFloor = 2;
+  elevator2.status = 'idle';
+  elevator2.currentFloor = 6;
 
+  elevator1.getFloorsGap(3);
+  elevator2.getFloorsGap(3);
 
-elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[0].floor);
-elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[0].floor);
-column1.RequestElevator2(3,'up');
-console.log('scenario 1 should send elevator 1');
-*/
-//******End scenario 1*******
+  column1.RequestElevator(3,'up');
+  console.log('scenario 1 should send elevator 1');
+};
 
-//*****Scenario 2**************
-//EVERYTHING WORKS IN SCENARIO 2
-/*
-elevator1.status = 'idle';
-elevator1.currentFloor = 10;
-elevator2.status = 'idle';
-elevator2.currentFloor = 3;
+function scenario2() {
+  elevator1.status = 'idle';
+  elevator1.currentFloor = 10;
+  elevator2.status = 'idle';
+  elevator2.currentFloor = 3;
+  elevator1.getFloorsGap(1);
+  elevator2.getFloorsGap(1);
 
-column1.requestedFloorsQueue.push({'floor':1,'direction':'up'});
+  column1.RequestElevator(1,'up');//scenario 2 1st call
+  console.log('scenario 2 - 1st call sends elevator 2');
 
-elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[0].floor);
-elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[0].floor);
-column1.RequestElevator2(1,'up');//scenario 1st call
-console.log('scenario 2 - 1st call send elevator 2');
+  //scenario 2 - 2nd call
+  elevator2.currentFloor = 6;
+  elevator1.getFloorsGap(3);
+  elevator2.getFloorsGap(3);
 
-//scenario 2 - 2nd call
-elevator2.currentFloor = 6;
+  column1.RequestElevator(3,'up');
+  console.log('scenario 2 - 2nd call sends elevator 2');
 
-column1.requestedFloorsQueue.push({'floor':3,'direction':'up'});
+  //scenario 2 - 3rd call
+  elevator2.currentFloor = 5;
+  elevator1.getFloorsGap(9);
+  elevator2.getFloorsGap(9);
 
-elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[1].floor);
-elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[1].floor);
+  column1.RequestElevator(9,'down');
+  console.log('scenario 2 - 3rd call send elevator 1');
+};
 
+//scenario1();
+//scenario2();
 
-column1.RequestElevator2(3,'up');
-console.log('scenario 2 - 2nd call send elevator 2');
-
-//scenario 2 - 3rd call
-elevator2.currentFloor = 5;
-
-column1.requestedFloorsQueue.push({'floor':9,'direction':'down'});
-
-elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[2].floor);
-elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[2].floor);
-
-column1.RequestElevator2(9,'down');
-console.log('scenario 2 - 3rd call send elevator 1');
-
-*/
-//******End scenario 2*******
-
-
-//*****Scenario 3**************
-
-elevator1.status = 'idle';
-elevator1.currentFloor = 10;
-elevator2.status = 'moving';
-elevator2.direction = 'up';
-elevator2.currentFloor = 3;
-//elevator2.internalList.push(6);
-
-column1.requestedFloorsQueue.push({'floor':3,'direction':'down'});
-
-elevator1.floorsGap = Math.abs(elevator1.currentFloor-column1.requestedFloorsQueue[0].floor);
-elevator2.floorsGap = Math.abs(elevator2.currentFloor-column1.requestedFloorsQueue[0].floor);
-column1.RequestElevator2(3,'down');
-//console.log("scenario 3 - 1st call schould send elevator 1")
+/*********Internal Button Test*********/
+elevator1.RequestFloor(elevator1,5);
 
 
 
-
-
-
+for(var i =0;  i <5; i++){
+	
+	setTimeout(() => {  console.log(i); }, 2000);
+	
+};
 
 
 /**********************End Test Section********************/
