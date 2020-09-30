@@ -10,9 +10,14 @@ switch (Elevator) {
 	break;
 }//end switch
 
+//Loop that works for displaying movement
 
+  var i = elevator2.currentFloor;
+  while(i>=1){
+    console.log('Elevator is at floor,i');
+    i++
+  };
 
-//case 3
 
 
 //Code Nic pour avoir floorsGap
