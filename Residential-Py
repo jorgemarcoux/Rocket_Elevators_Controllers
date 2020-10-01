@@ -8,6 +8,13 @@ class Column:
       self.maximumFloor = maximumFloor
       self.elevatorsPerColumn = elevatorsPerColumn
 
+    def RequestElevator(self,requestedFloor, direction):
+      if elevator1.state == 'idle' and elevator2.state == 'idle':
+        if elevator1.floorsGap < elevator2.floorsGap:
+          print('elevator:' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent')
+        else: 
+          print('elevator:' + elevator2.id+ ' at floor '+elevator2.currentFloor+' is sent')
+          
 
 
 
@@ -26,33 +33,90 @@ class Elevator:
         if requestedFloor > elevator.currentFloor:
              elevator.direction = 'up' 
              print('Elvator direction:',elevator.direction)
-             time.sleep(2)
+             time.sleep(1)
              print('Moving to floor #',requestedFloor)
         while elevator.currentFloor < requestedFloor:
              elevator.currentFloor+=1
-             time.sleep(2)
+             time.sleep(1)
              print('Elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
         else:
              requestedFloor < elevator.currentFloor
              elevator.direction = 'down'
              print('Elvator direction:',elevator.direction)
-             time.sleep(2)
              print('Moving to floor #',requestedFloor)
         while requestedFloor < elevator.currentFloor:
              elevator.currentFloor-=1
-             time.sleep(2)
              print('elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
         if elevator.currentFloor == requestedFloor:
              print('Elvator stopped')
-             time.sleep(2)
+             time.sleep(1)
              print('Elevator',elevator.number, 'arrived at target floor')
-             time.sleep(2)
+             time.sleep(1)
              print('Opening doors...')
-             time.sleep(2)
+             time.sleep(1)
              print('Person exits the elevator')
-             time.sleep(2)
+             time.sleep(1)
              print('closing doors...')
-             time.sleep(2)
+             time.sleep(1)
+
+    def getFloorsGap(self,requestedFloor):
+ 	    self.floorsGap = abs(self.currentFloor-requestedFloor)
+
+    def moveElevator(self,elevator,requestedFloor,targetFloor):
+      if requestedFloor > elevator.requestedFloor:
+        elevator.direction = 'up'
+        print('Elevator direction:',elevator.direction)
+        while(elevator.currentFloor<requestedFloor):
+          elevator.currentFloor+=1
+          time.sleep(1)
+          print('Elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
+      else:
+           requestedFloor<elevator.currentFloor
+           elevator.direction = 'down'
+           print('Elvator direction:',elevator.direction)
+           while requestedFloor < elevator.currentFloor:
+             elevator.currentFloor-=1
+             print('elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
+
+      if elevator.currentFloor == requestedFloor:
+        print('Elvator stopped')
+        time.sleep(1)
+        print('Elevator',elevator.id, 'arrived at target floor')
+        time.sleep(1)
+        print('Opening doors...')
+        time.sleep(1)
+        print('Person enters the elevator')
+        time.sleep(1)
+        print('closing doors...')
+        time.sleep(1)
+        print('going to requested floor')
+        time.sleep(1)
+      if targetFloor > elevator.currentFloor:
+        elevator.direction = 'up'  
+        print('elevator direction: '+ elevator.direction)
+        while targetFloor > elevator.currentFloor:
+          elevator.currentFloor+=1
+          time.sleep(1)
+          print('elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
+        while targetFloor < elevator.currentFloor:
+          elevator.currentFloor-=1
+          print('elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
+        if elevator.currentFloor == targetFloor:
+          time.sleep(1)
+          print('Elvator stopped')
+          time.sleep(1)
+          print('Elevator',elevator.id, 'arrived at target floor')
+          time.sleep(1)
+          print('Opening doors...')
+          time.sleep(1)
+          print('Person exits the elevator')
+          time.sleep(1)
+          print('closing doors...') 
+
+
+
+
+   
 
 
 # Test Section -
