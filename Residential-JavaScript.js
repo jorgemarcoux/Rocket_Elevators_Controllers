@@ -14,7 +14,7 @@ class Column{
  RequestElevator(requestedFloor, direction,targetFloor) {
    elevator1.getFloorsGap(requestedFloor);
    elevator2.getFloorsGap(requestedFloor);
- 	 if(elevator1.status === 'idle' && elevator2.status === 'idle'){
+ 	 if(elevator1.state === 'idle' && elevator2.state === 'idle'){
  	 	if(elevator1.floorsGap < elevator2.floorsGap){
       console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
  	 		console.log('Elevator:' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent');
@@ -221,9 +221,9 @@ var elevator2 = new Elevator(2);
 
 
 function scenario1() {
-  elevator1.status = 'idle';
+  elevator1.state = 'idle';
   elevator1.currentFloor = 2;
-  elevator2.status = 'idle';
+  elevator2.state = 'idle';
   elevator2.currentFloor = 6;
 
   column1.RequestElevator(3,'up',7);
@@ -232,9 +232,9 @@ function scenario1() {
 
 function scenario2() {
   
-  elevator1.status = 'idle';
+  elevator1.state = 'idle';
   elevator1.currentFloor = 10;
-  elevator2.status = 'idle';
+  elevator2.state = 'idle';
   elevator2.currentFloor = 3;
   sleep(1000);
   column1.RequestElevator(1,'up',6);//scenario 2 - 1st call

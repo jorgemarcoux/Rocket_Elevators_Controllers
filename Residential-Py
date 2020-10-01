@@ -8,12 +8,18 @@ class Column:
       self.maximumFloor = maximumFloor
       self.elevatorsPerColumn = elevatorsPerColumn
 
-    def RequestElevator(self,requestedFloor, direction):
+    def RequestElevator(self,requestedFloor,direction,targetFloor):
+      elevator1.getFloorsGap(requestedFloor)
+      elevator2.getFloorsGap(requestedFloor)
       if elevator1.state == 'idle' and elevator2.state == 'idle':
         if elevator1.floorsGap < elevator2.floorsGap:
-          print('elevator:' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent')
+          print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1')
+          print('Elevator:', elevator1.number, ' at floor ',elevator1.currentFloor,' is sent')
+          elevator1.moveElevator(requestedFloor,targetFloor)
         else: 
-          print('elevator:' + elevator2.id+ ' at floor '+elevator2.currentFloor+' is sent')
+          print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2')
+          print('elevator:' + elevator2.number+ ' at floor '+elevator2.currentFloor+' is sent')
+          elevator2.moveElevator(requestedFloor,targetFloor)
           
 
 
@@ -68,7 +74,6 @@ class Elevator:
         print('Elevator direction:',elevator.direction)
         while(elevator.currentFloor<requestedFloor):
           elevator.currentFloor+=1
-          time.sleep(1)
           print('Elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
       else:
            requestedFloor<elevator.currentFloor
@@ -96,7 +101,6 @@ class Elevator:
         print('elevator direction: '+ elevator.direction)
         while targetFloor > elevator.currentFloor:
           elevator.currentFloor+=1
-          time.sleep(1)
           print('elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
         while targetFloor < elevator.currentFloor:
           elevator.currentFloor-=1
@@ -119,10 +123,36 @@ class Elevator:
    
 
 
-# Test Section -
+# Test Section ----------------------------------------------------
 column1 = Column(1,10,1,10,2)
 elevator1 = Elevator(1)
 elevator2 = Elevator(2)
+# To make your own test, just call the function: column1.RequestElevator(requestedFloor, direction,targetFloor)
+def scenario1():
+  elevator1.state = 'idle'
+  elevator1.currentFloor = 2
+  elevator2.state = 'idle'
+  elevator2.currentFloor = 6
+  column1.RequestElevator(3,'up',7)
+
+def scenario2():
+  elevator1.state = 'idle'
+  elevator1.currentFloor = 10
+  elevator2.state = 'idle'
+  elevator2.currentFloor = 3
+  column1.RequestElevator(1,'up',6) # scenario 2 - 1st call
+  # scenario 2 - 2nd call
+  time.sleep(1)
+  elevator2.currentFloor = 6
+  column1.RequestElevator(3,'up',5)
+  # scenario 2 - 3rd call
+  time.sleep(1)
+  elevator2.currentFloor = 5
+  column1.RequestElevator(9,'down',2)
+
+scenario1()
+# scenario2()
+# --------------------------------------------------------
 # RequestFloor Method
 # elevator2.currentFloor = 6
 # elevator1.RequestFloor(elevator1,8)
