@@ -1,3 +1,5 @@
+import time
+
 class Column:
     def __init__(self,number,floorsNumber,minimumFloor,maximumFloor,elevatorsPerColumn):
      self.number = number
@@ -21,15 +23,42 @@ class Elevator:
 
     def RequestFloor(self,elevator,requestedFloor): 
      self.internalList.append(requestedFloor)
-      if requestedFloor > elevator.currentFloor:
+     if requestedFloor > elevator.currentFloor:
       elevator.direction = 'up' 
-      ('Elvator direction:',elevator.direction)
+      print('Elvator direction:',elevator.direction)
+      time.sleep(2)
+      print('Moving to floor #',requestedFloor)
+      while elevator.currentFloor < requestedFloor:
+       elevator.currentFloor+=1
+       time.sleep(2)
+       print('Elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
+     elif requestedFloor < elevator.currentFloor:
+      elevator.direction = 'down'
+      print('Elvator direction:',elevator.direction)
+      time.sleep(2)
+      print('Moving to floor #',requestedFloor)
+      while requestedFloor < elevator.currentFloor:
+       elevator.currentFloor-=1
+       print('elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
+     
+     if elevator.currentFloor == requestedFloor:
+      print('Elvator stopped')
+      time.sleep(2)
+      print('Elevator',elevator.number, 'arrived at target floor')
+      time.sleep(2)
+      print('Opening doors...')
+      time.sleep(2)
+      print('Person exits the elevator')
+      time.sleep(2)
+      print('closing doors...')
+      time.sleep(2)
 
 
 
 
 
 
-column1 = Column(1,10,1,10,2)
 elevator1 = Elevator(1)
+column1 = Column(1,10,1,10,2)
+
 print(elevator1)
