@@ -2,18 +2,18 @@ import time
 
 class Column:
     def __init__(self,number,floorsNumber,minimumFloor,maximumFloor,elevatorsPerColumn):
-     self.number = number
-     self.floorsNumber = floorsNumber
-     self.minimumFloor = minimumFloor
-     self.maximumFloor = maximumFloor
-     self.elevatorsPerColumn = elevatorsPerColumn
+      self.number = number
+      self.floorsNumber = floorsNumber
+      self.minimumFloor = minimumFloor
+      self.maximumFloor = maximumFloor
+      self.elevatorsPerColumn = elevatorsPerColumn
 
 
 
 
 class Elevator:
     def __init__(self,number):
-     self.number = number
+      self.number = number
 
     state = 'idle' # idle, moving, stopped, offline
     direction = 'none'# none, up, down
@@ -22,43 +22,44 @@ class Elevator:
     internalList = []
 
     def RequestFloor(self,elevator,requestedFloor): 
-     self.internalList.append(requestedFloor)
-     if requestedFloor > elevator.currentFloor:
-      elevator.direction = 'up' 
-      print('Elvator direction:',elevator.direction)
-      time.sleep(2)
-      print('Moving to floor #',requestedFloor)
-      while elevator.currentFloor < requestedFloor:
-       elevator.currentFloor+=1
-       time.sleep(2)
-       print('Elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
-     elif requestedFloor < elevator.currentFloor:
-      elevator.direction = 'down'
-      print('Elvator direction:',elevator.direction)
-      time.sleep(2)
-      print('Moving to floor #',requestedFloor)
-      while requestedFloor < elevator.currentFloor:
-       elevator.currentFloor-=1
-       print('elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
-     
-     if elevator.currentFloor == requestedFloor:
-      print('Elvator stopped')
-      time.sleep(2)
-      print('Elevator',elevator.number, 'arrived at target floor')
-      time.sleep(2)
-      print('Opening doors...')
-      time.sleep(2)
-      print('Person exits the elevator')
-      time.sleep(2)
-      print('closing doors...')
-      time.sleep(2)
+        self.internalList.append(requestedFloor)
+        if requestedFloor > elevator.currentFloor:
+             elevator.direction = 'up' 
+             print('Elvator direction:',elevator.direction)
+             time.sleep(2)
+             print('Moving to floor #',requestedFloor)
+        while elevator.currentFloor < requestedFloor:
+             elevator.currentFloor+=1
+             time.sleep(2)
+             print('Elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
+        else:
+             requestedFloor < elevator.currentFloor
+             elevator.direction = 'down'
+             print('Elvator direction:',elevator.direction)
+             time.sleep(2)
+             print('Moving to floor #',requestedFloor)
+        while requestedFloor < elevator.currentFloor:
+             elevator.currentFloor-=1
+             time.sleep(2)
+             print('elevator ',elevator.number, 'is at floor #', elevator.currentFloor)
+        if elevator.currentFloor == requestedFloor:
+             print('Elvator stopped')
+             time.sleep(2)
+             print('Elevator',elevator.number, 'arrived at target floor')
+             time.sleep(2)
+             print('Opening doors...')
+             time.sleep(2)
+             print('Person exits the elevator')
+             time.sleep(2)
+             print('closing doors...')
+             time.sleep(2)
 
 
-
-
-
-
-elevator1 = Elevator(1)
+# Test Section -
 column1 = Column(1,10,1,10,2)
-
-print(elevator1)
+elevator1 = Elevator(1)
+elevator2 = Elevator(2)
+# RequestFloor Method
+# elevator2.currentFloor = 6
+# elevator1.RequestFloor(elevator1,8)
+# elevator2.RequestFloor(elevator2,2)
