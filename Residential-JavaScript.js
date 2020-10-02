@@ -251,8 +251,10 @@ function scenario2() {
   
 };
 
+
 //scenario1();
 //scenario2();
+
 
 //To make your own test, just call the function: column1.RequestElevator(requestedFloor, direction,targetFloor);
 

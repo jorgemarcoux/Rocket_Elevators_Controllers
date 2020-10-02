@@ -17,9 +17,54 @@ class Column:
           print('Elevator:', elevator1.number, ' at floor ',elevator1.currentFloor,' is sent')
           elevator1.moveElevator(requestedFloor,targetFloor)
         else: 
-          print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2')
-          print('elevator:' + elevator2.number+ ' at floor '+elevator2.currentFloor+' is sent')
-          elevator2.moveElevator(requestedFloor,targetFloor)
+            print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2')
+            print('elevator:', elevator2.number, ' at floor ',elevator2.currentFloor,' is sent')
+            elevator2.moveElevator(requestedFloor,targetFloor)
+      elif elevator1.currentFloor == requestedFloor and elevator1.direction == direction:
+        if elevator1.direction == 'up' and direction == 'up' and elevator1.currentFloor <= requestedFloor:
+          print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1')
+          print('Elevator ',elevator1.number, ' at floor ',elevator1.currentFloor,'is sent')
+          elevator1.moveElevator(requestedFloor,targetFloor)
+        else:
+            elevator1.direction == 'down' and direction =='down' and elevator1.currentFloor >= requestedFloor
+            print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1')
+            print('elevator ',elevator1.number, ' at floor ',elevator1.currentFloor,' is sent')
+            elevator1.moveElevator(requestedFloor,targetFloor)
+      elif elevator2.currentFloor == requestedFloor and elevator2.direction == direction:
+        if elevator2.direction =='up' and direction =='up' and elevator2.currentFloor <= requestedFloor:
+            print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2')
+            print('Elevator ',elevator2.number, ' at floor ',elevator2.currentFloor,' is sent')
+            elevator2.moveElevator(requestedFloor,targetFloor)
+        else:
+              elevator2.direction == 'down' and direction =='down' and elevator1.currentFloor >= requestedFloor
+              print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2')
+              print('elevator ',elevator2.number, ' at floor ',elevator2.currentFloor,' is sent')
+              elevator2.moveElevator(requestedFloor,targetFloor)
+      elif elevator1.floorsGap < elevator2.floorsGap:
+          if elevator1.direction == direction:
+            if elevator1.direction == 'up' and direction == 'up' and elevator1.currentFloor <= requestedFloor:
+              print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1')
+              print('elevator ',elevator1.number, ' at floor ',elevator1.currentFloor,' is sent')
+              elevator1.moveElevator(requestedFloor,targetFloor)
+            else:
+                elevator1.direction == 'down' and direction =='down' and elevator1.currentFloor >= requestedFloor
+                print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1')
+                print('elevator ', elevator1.number, ' at floor ',elevator1.currentFloor,' is sent')
+                elevator1.moveElevator(requestedFloor,targetFloor)
+          elif elevator2.direction == direction:
+              if elevator1.direction == 'up' and direction == 'up' and elevator1.currentFloor <= requestedFloor:
+                print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2')
+                print('elevator ', elevator2.number, ' at floor ',elevator2.currentFloor,' is sent')
+                elevator2.moveElevator(requestedFloor,targetFloor)
+              else:
+                  elevator1.direction == 'down' and direction =='down' and elevator1.currentFloor >= requestedFloor
+                  print('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2')
+                  print('elevator ' + elevator2.number+ ' at floor '+elevator2.currentFloor+' is sent')
+                  elevator2.moveElevator(requestedFloor,targetFloor)
+
+
+      
+          
           
 
 
@@ -38,7 +83,7 @@ class Elevator:
         self.internalList.append(requestedFloor)
         if requestedFloor > elevator.currentFloor:
              elevator.direction = 'up' 
-             print('Elvator direction:',elevator.direction)
+             print('Elvator',elevator.number, 'direction:',elevator.direction)
              time.sleep(1)
              print('Moving to floor #',requestedFloor)
         while elevator.currentFloor < requestedFloor:
@@ -65,28 +110,29 @@ class Elevator:
              print('closing doors...')
              time.sleep(1)
 
+
     def getFloorsGap(self,requestedFloor):
  	    self.floorsGap = abs(self.currentFloor-requestedFloor)
 
-    def moveElevator(self,elevator,requestedFloor,targetFloor):
-      if requestedFloor > elevator.requestedFloor:
-        elevator.direction = 'up'
-        print('Elevator direction:',elevator.direction)
-        while(elevator.currentFloor<requestedFloor):
-          elevator.currentFloor+=1
-          print('Elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
+    def moveElevator(self,requestedFloor,targetFloor):
+      if requestedFloor > self.currentFloor:
+        self.direction = 'up'
+        print('Elevator direction:',self.direction)
+        while(self.currentFloor<requestedFloor):
+          self.currentFloor+=1
+          print('Elevator ',self.number, 'is at floor #', self.currentFloor)
       else:
-           requestedFloor<elevator.currentFloor
-           elevator.direction = 'down'
-           print('Elvator direction:',elevator.direction)
-           while requestedFloor < elevator.currentFloor:
-             elevator.currentFloor-=1
-             print('elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
+           requestedFloor<self.currentFloor
+           self.direction = 'down'
+           print('Elvator direction:',self.direction)
+           while requestedFloor < self.currentFloor:
+             self.currentFloor-=1
+             print('elevator ',self.number, 'is at floor #', self.currentFloor)
 
-      if elevator.currentFloor == requestedFloor:
+      if self.currentFloor == requestedFloor:
         print('Elvator stopped')
         time.sleep(1)
-        print('Elevator',elevator.id, 'arrived at target floor')
+        print('Elevator',self.number, 'arrived at target floor')
         time.sleep(1)
         print('Opening doors...')
         time.sleep(1)
@@ -96,20 +142,20 @@ class Elevator:
         time.sleep(1)
         print('going to requested floor')
         time.sleep(1)
-      if targetFloor > elevator.currentFloor:
-        elevator.direction = 'up'  
-        print('elevator direction: '+ elevator.direction)
-        while targetFloor > elevator.currentFloor:
-          elevator.currentFloor+=1
-          print('elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
-        while targetFloor < elevator.currentFloor:
-          elevator.currentFloor-=1
-          print('elevator ',elevator.id, 'is at floor #', elevator.currentFloor)
-        if elevator.currentFloor == targetFloor:
+      if targetFloor > self.currentFloor:
+        self.direction = 'up'  
+        print('elevator direction: '+ self.direction)
+        while targetFloor > self.currentFloor:
+          self.currentFloor+=1
+          print('elevator ',self.number, 'is at floor #', self.currentFloor)
+        while targetFloor < self.currentFloor:
+          self.currentFloor-=1
+          print('elevator ',self.number, 'is at floor #', self.currentFloor)
+        if self.currentFloor == targetFloor:
           time.sleep(1)
           print('Elvator stopped')
           time.sleep(1)
-          print('Elevator',elevator.id, 'arrived at target floor')
+          print('Elevator',self.number, 'arrived at target floor')
           time.sleep(1)
           print('Opening doors...')
           time.sleep(1)
@@ -150,7 +196,7 @@ def scenario2():
   elevator2.currentFloor = 5
   column1.RequestElevator(9,'down',2)
 
-scenario1()
+# scenario1()
 # scenario2()
 # --------------------------------------------------------
 # RequestFloor Method
