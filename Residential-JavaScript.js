@@ -9,6 +9,14 @@ class Column{
   }
      requestedFloorsQueue = [];
 
+RequestElevator3(requestedFloor, direction,targetFloor){
+  if(elevator1.state == 'idle' && elevator2.state == 'moving'){
+     console.log('Elevator',elevator1.id, ' is sent');
+    }else if(elevator2.state == 'idle' && elevator1.state == 'moving'){
+     console.log('Elevator',elevator2.id, ' is sent');
+}
+
+};
 
    
  RequestElevator(requestedFloor, direction,targetFloor) {
@@ -68,7 +76,15 @@ class Column{
   	 	}
   	 	}
   	 }
-  
+    if(elevator1.state == 'idle' && elevator2.state == 'moving'){
+     console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
+     console.log('elevator ' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent');
+     elevator1.moveElevator(requestedFloor,targetFloor);
+    } 
+    else if(elevator2.state == 'idle' && elevator1.state == 'moving'){
+     console.log('Elevator',elevator2.id, ' is sent');
+}
+
 };
 
 
@@ -98,32 +114,32 @@ class Elevator {
     overload = false;
 
   
-  RequestFloor(elevator,requestedFloor) {
-    elevator.internalList.push(requestedFloor);
-    if(requestedFloor>elevator.currentFloor){
-    elevator.direction = 'up';
-    console.log('Elevator ',elevator.id, 'direction:',elevator.direction);
+  RequestFloor(requestedFloor) {
+    this.internalList.push(requestedFloor);
+    if(requestedFloor>this.currentFloor){
+    this.direction = 'up';
+    console.log('Elevator ',this.id, 'direction:',this.direction);
     console.log('Moving to floor #',requestedFloor);
-    while(elevator.currentFloor<requestedFloor){
-      elevator.currentFloor++;
+    while(this.currentFloor<requestedFloor){
+      this.currentFloor++;
       sleep(2000);
-      console.log('Elevator ',elevator.id, 'is at floor #', elevator.currentFloor);
+      console.log('Elevator ',this.id, 'is at floor #', this.currentFloor);
     }
-    }else if(requestedFloor<elevator.currentFloor){
-    elevator.direction = 'down';
-    console.log('Elvator direction:',elevator.direction);
+    }else if(requestedFloor<this.currentFloor){
+    this.direction = 'down';
+    console.log('Elvator direction:',this.direction);
     console.log('Moving to floor #',requestedFloor);
-    while(requestedFloor<elevator.currentFloor){
-      elevator.currentFloor--;
+    while(requestedFloor<this.currentFloor){
+      this.currentFloor--;
       sleep(200);
-      console.log('elevator ',elevator.id, 'is at floor #', elevator.currentFloor);
+      console.log('elevator ',this.id, 'is at floor #', this.currentFloor);
       }
       
     }
-    if(elevator.currentFloor === requestedFloor){
+    if(this.currentFloor === requestedFloor){
     console.log('Elvator stopped');
     sleep(2000);
-    console.log('Elevator',elevator.id, 'arrived at target floor');
+    console.log('Elevator',this.id, 'arrived at target floor');
     sleep(2000);
     console.log('Opening doors...');
     sleep(2000);
@@ -132,7 +148,9 @@ class Elevator {
     console.log('closing doors...');
     sleep(2000);
   }
+  
   };
+
 
 
  getFloorsGap(requestedFloor){
@@ -251,23 +269,46 @@ function scenario2() {
   
 };
 
+function scenario3(){
+  elevator1.state = 'idle';
+  elevator1.currentFloor = 10;
+  elevator2.state = 'moving';
+  elevator2.currentFloor = 3;
+  column1.RequestElevator(3,'down',2);
+  //2nd call
+  elevator1.currentFloor = 2;
+  elevator2.currentFloor = 6;
+  elevator2.state = 'idle';
+  column1.RequestElevator(10,'down',3);
+};
+
+
 
 //scenario1();
 //scenario2();
+//scenario3()
 
 
 //To make your own test, just call the function: column1.RequestElevator(requestedFloor, direction,targetFloor);
 
 /*********Internal Button Test*********/
-//elevator1.currentFloor = 1;
-//elevator1.RequestFloor(elevator1,10);
+elevator1.currentFloor = 1;
+elevator1.RequestFloor(10);
 //elevator2.currentFloor = 8;
 //elevator2.RequestFloor(elevator1,5);
 
 /**********************End Test Section********************/
 
 
+//elevator1.internalList.push(1,5);
 
+/* test
+
+while(this.internalList>0){
+  this.internalList.forEach(RequestFloor);
+}
+
+*/
 
 
 
