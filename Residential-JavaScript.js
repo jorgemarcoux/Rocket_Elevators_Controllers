@@ -9,20 +9,11 @@ class Column{
   }
      requestedFloorsQueue = [];
 
-RequestElevator3(requestedFloor, direction,targetFloor){
-  if(elevator1.state == 'idle' && elevator2.state == 'moving'){
-     console.log('Elevator',elevator1.id, ' is sent');
-    }else if(elevator2.state == 'idle' && elevator1.state == 'moving'){
-     console.log('Elevator',elevator2.id, ' is sent');
-}
-
-};
-
    
  RequestElevator(requestedFloor, direction,targetFloor) {
-   elevator1.getFloorsGap(requestedFloor);
-   elevator2.getFloorsGap(requestedFloor);
- 	 if(elevator1.state === 'idle' && elevator2.state === 'idle'){
+  elevator1.getFloorsGap(requestedFloor);
+  elevator2.getFloorsGap(requestedFloor);
+ 	if(elevator1.state === 'idle' && elevator2.state === 'idle'){
  	 	if(elevator1.floorsGap < elevator2.floorsGap){
       console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
  	 		console.log('Elevator:' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent');
@@ -33,27 +24,27 @@ RequestElevator3(requestedFloor, direction,targetFloor){
        elevator2.moveElevator(requestedFloor,targetFloor);
 	    }
 	        }
-  	 if(elevator1.currentFloor === requestedFloor && elevator1.direction === direction){
-  	 	if(elevator1.direction == 'up' && direction == 'up' && elevator1.currentFloor <= requestedFloor){
-          console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
-  	 	    console.log('elevator ' + elevator1.id+ ' at floor '+elevator1.currentFloor+'is sent');
-          elevator1.moveElevator(requestedFloor,targetFloor); 
-  	    }else if(elevator1.direction == 'down' && direction =='down' && elevator1.currentFloor >= requestedFloor){
-          console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
-  	    	console.log('elevator ' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent');
-          elevator1.moveElevator(requestedFloor,targetFloor);
+  if(elevator1.currentFloor === requestedFloor && elevator1.direction === direction){
+  	if(elevator1.direction == 'up' && direction == 'up' && elevator1.currentFloor <= requestedFloor){
+       console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
+  	 	 console.log('elevator ' + elevator1.id+ ' at floor '+elevator1.currentFloor+'is sent');
+       elevator1.moveElevator(requestedFloor,targetFloor); 
+  	}else if(elevator1.direction == 'down' && direction =='down' && elevator1.currentFloor >= requestedFloor){
+       console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
+  	   console.log('elevator ' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent');
+       elevator1.moveElevator(requestedFloor,targetFloor);
   	    }
-  	 }else if(elevator2.currentFloor === requestedFloor && elevator2.direction === direction){
+  	}else if(elevator2.currentFloor === requestedFloor && elevator2.direction === direction){
   	 	if(elevator2.direction ==='up' && direction ==='up' && elevator2.currentFloor <= requestedFloor){
         console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2');
   	 	  console.log('elevator ' + elevator2.id+ ' at floor '+elevator2.currentFloor+' is sent');
         elevator2.moveElevator(requestedFloor,targetFloor);
-  	 	}else if(elevator2.direction === 'down' && direction ==='down' && elevator1.currentFloor >= requestedFloor){
+  	}else if(elevator2.direction === 'down' && direction ==='down' && elevator1.currentFloor >= requestedFloor){
         console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2');
   	 	  console.log('elevator ' + elevator2.id+ ' at floor '+elevator2.currentFloor+' is sent');
         elevator2.moveElevator(requestedFloor,targetFloor);
   	 	}
-  	 }else if(elevator1.floorsGap < elevator2.floorsGap){
+  }else if(elevator1.floorsGap < elevator2.floorsGap){
   	 	if(elevator1.direction == direction){
   	 		if(elevator1.direction == 'up' && direction == 'up' && elevator1.currentFloor <= requestedFloor){
           console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
@@ -63,7 +54,7 @@ RequestElevator3(requestedFloor, direction,targetFloor){
           console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
   	 			console.log('elevator ' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent');
           elevator1.moveElevator(requestedFloor,targetFloor);
-  	 	}else if(elevator2.direction == direction){
+  }else if(elevator2.direction == direction){
   	 		if(elevator1.direction == 'up' && direction == 'up' && elevator1.currentFloor <= requestedFloor){
           console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2');
   	 			console.log('elevator ' + elevator2.id+ ' at floor '+elevator2.currentFloor+' is sent');
@@ -76,13 +67,15 @@ RequestElevator3(requestedFloor, direction,targetFloor){
   	 	}
   	 	}
   	 }
-    if(elevator1.state == 'idle' && elevator2.state == 'moving'){
+  if(elevator1.state == 'idle' && elevator2.state == 'moving'){
      console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 1');
      console.log('elevator ' + elevator1.id+ ' at floor '+elevator1.currentFloor+' is sent');
      elevator1.moveElevator(requestedFloor,targetFloor);
     } 
-    else if(elevator2.state == 'idle' && elevator1.state == 'moving'){
-     console.log('Elevator',elevator2.id, ' is sent');
+  else if(elevator2.state == 'idle' && elevator1.state == 'moving'){
+     console.log('Scenario - call from floor #',requestedFloor, 'going to #',targetFloor, 'should send elevator 2');
+     console.log('elevator ' + elevator2.id+ ' at floor '+elevator2.currentFloor+' is sent');
+     elevator2.moveElevator(requestedFloor,targetFloor);
 }
 
 };
@@ -99,11 +92,9 @@ class Elevator {
        this.currentFloor = 1;
        this.floorsGap;
        this.targetFloorGap;
-       this.directionDownCheck;
 
 	}
 
-    directionUpCheck;
     maximumWeight = 10000;
     currentWeight;
     idleTime = 0;
@@ -118,39 +109,38 @@ class Elevator {
     this.internalList.push(requestedFloor);
     if(requestedFloor>this.currentFloor){
     this.direction = 'up';
-    console.log('Elevator ',this.id, 'direction:',this.direction);
+    console.log('Elevator ',this.id,'at floor #',this.currentFloor, 'direction:',this.direction);
     console.log('Moving to floor #',requestedFloor);
     while(this.currentFloor<requestedFloor){
       this.currentFloor++;
-      sleep(2000);
+      sleep(1000);
       console.log('Elevator ',this.id, 'is at floor #', this.currentFloor);
     }
     }else if(requestedFloor<this.currentFloor){
     this.direction = 'down';
-    console.log('Elvator direction:',this.direction);
+    console.log('Elvator', 'is at floor #', this.currentFloor, ',direction', this.direction);
     console.log('Moving to floor #',requestedFloor);
     while(requestedFloor<this.currentFloor){
       this.currentFloor--;
-      sleep(200);
+      sleep(100);
       console.log('elevator ',this.id, 'is at floor #', this.currentFloor);
       }
       
     }
     if(this.currentFloor === requestedFloor){
     console.log('Elvator stopped');
-    sleep(2000);
+    sleep(1000);
     console.log('Elevator',this.id, 'arrived at target floor');
-    sleep(2000);
+    sleep(1000);
     console.log('Opening doors...');
-    sleep(2000);
+    sleep(1000);
     console.log('Person exits the elevator');
-    sleep(2000);
+    sleep(1000);
     console.log('closing doors...');
-    sleep(2000);
+    sleep(1000);
   }
   
   };
-
 
 
  getFloorsGap(requestedFloor){
@@ -167,7 +157,7 @@ class Elevator {
     console.log('Elevator direction:',this.direction);
     while(this.currentFloor<requestedFloor){
       this.currentFloor++;
-      sleep(2000);
+      sleep(1000);
       console.log('Elevator ',this.id, 'is at floor #', this.currentFloor);
     }
   }else if(requestedFloor<this.currentFloor){
@@ -175,7 +165,7 @@ class Elevator {
     console.log('Elvator direction:',this.direction);
     while(requestedFloor<this.currentFloor){
       this.currentFloor--;
-      sleep(200);
+      sleep(100);
       console.log('Elevator ',this.id, 'is at floor #', this.currentFloor);
       }
       
@@ -183,17 +173,17 @@ class Elevator {
   
    if(this.currentFloor === requestedFloor){
     console.log('Elvator stopped');
-    sleep(2000);
+    sleep(1000);
     console.log('Elevator',this.id, 'arrived at target floor');
-    sleep(2000);
+    sleep(1000);
     console.log('Opening doors...');
-    sleep(2000);
+    sleep(1000);
     console.log('Person enters the elevator');
-    sleep(2000);
+    sleep(1000);
     console.log('closing doors...');
-    sleep(2000);
+    sleep(1000);
     console.log('going to requested floor');
-    sleep(2000);
+    sleep(1000);
    }
    if(targetFloor>this.currentFloor){
     this.direction = 'up';
@@ -201,29 +191,33 @@ class Elevator {
    }
    while(targetFloor>this.currentFloor){
     this.currentFloor++;
-    sleep(200);
+    sleep(100);
     console.log('Elevator ',this.id, 'is at floor #', this.currentFloor);
   }
+  if(targetFloor<this.currentFloor){
+    this.direction = 'down';
+    console.log('Elevator direction: '+ this.direction);
    while(targetFloor<this.currentFloor){
     this.currentFloor--;
-    sleep(2000);
+    sleep(1000);
     console.log('Elevator ',this.id, 'is at floor #', this.currentFloor);
  }
    if(this.currentFloor === targetFloor){
-    sleep(2000);
+    sleep(1000);
     console.log('Elvator stopped');
-    sleep(2000);
+    sleep(1000);
     console.log('Elevator ',this.id, 'arrived at target floor');
-    sleep(2000);
+    sleep(1000);
     console.log('Opening doors...');
-    sleep(2000);
+    sleep(1000);
     console.log('Person exits the elevator');
-    sleep(2000);
+    sleep(1000);
     console.log('closing doors...');
    }
+  }
+ };
 
- }
-
+     
 };//close Elevator class
 
 /////////////////////////////////
@@ -286,29 +280,21 @@ function scenario3(){
 
 //scenario1();
 //scenario2();
-//scenario3()
+//scenario3();
 
 
-//To make your own test, just call the function: column1.RequestElevator(requestedFloor, direction,targetFloor);
+//To make your own test, just call the function: column1.RequestElevator(requestedFloor, direction,targetFloor . Please indicate the direction 'up' or 'down' in lowercase);
 
 /*********Internal Button Test*********/
-elevator1.currentFloor = 1;
-elevator1.RequestFloor(10);
+//elevator1.currentFloor = 1;
+//elevator1.RequestFloor(5);
+//elevator1.RequestFloor(2);
 //elevator2.currentFloor = 8;
 //elevator2.RequestFloor(elevator1,5);
 
 /**********************End Test Section********************/
 
 
-//elevator1.internalList.push(1,5);
-
-/* test
-
-while(this.internalList>0){
-  this.internalList.forEach(RequestFloor);
-}
-
-*/
 
 
 
@@ -318,4 +304,6 @@ while(this.internalList>0){
 
 
 
+
+  
 
