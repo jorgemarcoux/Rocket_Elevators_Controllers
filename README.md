@@ -23,8 +23,10 @@ To see the results of the JS test, you'll need to:
 <br>
 To make your own test, just call the function: <strong>column1.RequestElevator(requestedFloor, direction,targetFloor)</strong>. Please indicate the direction 'up' or 'down' in lowercase)
 <br>
+<br>
 You can also test the requestFloor method (the one that brings an user to a requestedFloor pressing the internal buttons of the elevator) by uncommenting the test under "Internal Button Test", also provided in the test section.
-  
+<br>
+<br>  
 NOTE: The Ruby version of the algorithm is not finished yet.
 
 Enjoy! 💻
