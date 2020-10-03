@@ -290,7 +290,7 @@ function scenario3(){
 //elevator1.RequestFloor(5);
 //elevator1.RequestFloor(2);
 //elevator2.currentFloor = 8;
-//elevator2.RequestFloor(elevator1,5);
+//elevator2.RequestFloor(5);
 
 /**********************End Test Section********************/
 
