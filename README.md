@@ -2,7 +2,7 @@
 Contains the algorithm files for the elevator controllers for the New Rocket Elevator Solutions for both Residential and Commercial Offers
 
 <h2>Residential Alogrithm</h2>
-The algorithm for the residential services provided by Rocket Elevators is found in the <i>Residential_Controller.algo</i> file. I also built it on <storng>Javascript and <strong>Python </strong>
+The algorithm for the residential services provided by Rocket Elevators is found in the <i>Residential_Controller.algo</i> file. I also built it on <storng>Javascript</strong> and <strong>Python </strong>
 applying it to a residential building with 10 stories and 2 elevators.
 <br/>
 <br>
@@ -18,9 +18,12 @@ To see the results of the JS test, you'll need to:
 <li>Reaload your browser tab to see the scenarios in action</li>
 </ol>
 <br>
-  <storng>For the Python version, you'll need to install <a href="https://www.python.org/downloads/">Python</a> in your computer and use a command terminal to run the tests</strong>.
+<storng>For the Python version, you'll need to install <a href="https://www.python.org/downloads/">Python</a> in your computer and use a command terminal to run the tests</strong>.
 <br>  
+<br>
 To make your own test, just call the function: <strong>column1.RequestElevator(requestedFloor, direction,targetFloor)</strong>. Please indicate the direction 'up' or 'down' in lowercase)
-  <br>
+<br>
 You can also test the requestFloor method (the one that brings an user to a requestedFloor pressing the internal buttons of the elevator) by uncommenting the test under "Internal Button Test", also provided in the test section.
+
+Enjoy! 💻
 
