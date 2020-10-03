@@ -5,8 +5,9 @@ Contains the algorithm files for the elevator controllers for the New Rocket Ele
 The algorithm for the residential services provided by Rocket Elevators is found in the <i>Residential_Controller.algo</i> file. I also built it on <storng>Javascript and <strong>Python </strong>
 applying it to a residential building with 10 stories and 2 elevators.
 <br/>
+<br>
 Please notice that several test scenarios are provided in each file, so you can see the algorithm in action. In order to run these tests, just uncomment the functions <strong>scenario1()</strong>, 
-<strong>scenario2()</strong> and <strong>scenario3()</strong> in the "test section" (line 281 to 283 in the JavaScript file and 221 to 214 in the Python one)
+<strong>scenario2()</strong> and <strong>scenario3()</strong> in the "test section" (line 281 to 283 in the <a href src="https://github.com/jorgemarcoux/Rocket_Elevators_Controllers/blob/master/Residential-JavaScript.js">JavaScript file</a> and 221 to 214 in the <a href="https://github.com/jorgemarcoux/Rocket_Elevators_Controllers/blob/master/Residential-Py">Python</a> one)
 <br/>
 To see the results of the JS test, you'll need to:
 <ol>
