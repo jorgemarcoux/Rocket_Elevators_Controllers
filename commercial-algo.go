@@ -18,19 +18,38 @@ type Column struct{
 	minimumFloor int
 	maximumFloor int
 	elevatorsInColumn int
-	listOfElevators []Elevator 
+	listOfElevators []Elevator
 	//requestedFloorsQueue [] int
 	
 }
 
 func (c Column) addElevatorsToColumn(elevatorsAmount int){
-   var listOfElevators []Elevator
-   for i :=0; i < elevatorsAmount; i++{
+   
+   for i :=1; i == elevatorsAmount; i++ {
 	  columnElevator := Elevator{"A1","idle","none",1,0}
-	  //listOfElevators: append(columnElevator)
-	  listOfElevators = append(listOfElevators,columnElevator)
+	  c.listOfElevators = append(c.listOfElevators,columnElevator)
    }
 }
+
+func (c Column) getSmallerFloorsGap(){
+	smallestGap := c.listOfElevators[0].floorsGap
+	for i :=0; i <= len(c.listOfElevators); i++{
+		if i < smallestGap{
+		  smallestGap = i
+		  fmt.Println(smallestGap)
+		}
+	  }
+}
+
+func (c Column) getSmallerFloorsGap2(){
+	smallestGap := c.listOfElevators[0].floorsGap
+	for _, element := range c.listOfElevators{
+		if element < smallestGap{
+			smallestGap = element
+		}
+	}
+}
+
 
 func (c Column) requestElevator(floorNumber int, direction string){
 
@@ -83,10 +102,10 @@ func (e Elevator) requestfloor(requestedFloor int) {
 func main(){
 	battery1 := Battery{1,4}
 	fmt.Printf("Battery1 id is: %v",battery1.id)
-	columnA := Column{"A",7,-6,1,5,}
-	columnB := Column{"B",20,1,20,5}
-	columnC := Column{"C",21,1,40,5}
-	columnD := Column{"D",21,1,60,5}
+	columnA := Column{"A",7,-6,1,5,[]Elevator{}}
+	columnB := Column{"B",20,1,20,5,[]Elevator{}}
+	columnC := Column{"C",21,1,40,5,[]Elevator{}}
+	columnD := Column{"D",21,1,60,5,[]Elevator{}}
 	fmt.Println(columnA.floorsNumber)
 	fmt.Println(columnB.floorsNumber)
 	fmt.Println(columnC.floorsNumber)
@@ -99,7 +118,16 @@ func main(){
 	fmt.Println("Elevator 2 in Column A id is: ",elevatorA2.id)
 	fmt.Println("Elevator 3 in Column A id is: ",elevatorA3.id)
 	
-	//elevatorA1.requestfloor(9)
+	//elevatorA1.requestfloor(9) test requestFloor
 	columnA.addElevatorsToColumn(5)
+	elevatorA1.floorsGap = 5
+	elevatorA2.floorsGap = 2
+	columnA.listOfElevators = append(columnA.listOfElevators,elevatorA1)
+	columnA.listOfElevators = append(columnA.listOfElevators,elevatorA2)
+	fmt.Println(columnA.listOfElevators[0].floorsGap)
+	fmt.Println(columnA.listOfElevators[1].floorsGap)
 	fmt.Println(columnA.listOfElevators)
+
+	columnA.getSmallerFloorsGap()
 }
+
