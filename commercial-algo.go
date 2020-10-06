@@ -5,15 +5,29 @@ import (
 	"time"
 )
 
+func positive(n int) int {
+    if n < 0 {
+        n *= -1
+    }
+    return n
+}
+
 type Battery struct{
 	id int
 	numberOfColumns int
+	listOfColumns []Column
 }
 
+func (b *Battery) createBattery(numberOfColumns int, _elevatorsInColumn int){
+     for i :=0; i < numberOfColumns; i++{
+		 b.listOfColumns = append(b.listOfColumns, Column{i+1,0,0,0,_elevatorsInColumn,[]Elevator{}})
+		 b.listOfColumns[i].createColumn(_elevatorsInColumn)
+	 }
 
+}
 
 type Column struct{
-	id string
+	id int
 	floorsNumber int
 	minimumFloor int
 	maximumFloor int
@@ -23,40 +37,45 @@ type Column struct{
 	
 }
 
-func (c Column) addElevatorsToColumn(elevatorsAmount int){
-   
-   for i :=1; i == elevatorsAmount; i++ {
-	  columnElevator := Elevator{"A1","idle","none",1,0}
-	  c.listOfElevators = append(c.listOfElevators,columnElevator)
+func (c *Column) ChangeColumnValues(_floorNumber int, _minimumFloor int,_maximumFloor int){
+	c.floorsNumber = _floorNumber
+	c.minimumFloor = _minimumFloor
+	c.maximumFloor = _maximumFloor
+
+}
+
+func (c *Column) createColumn(numberOfElevators int){
+   for i :=0; i < numberOfElevators; i++{
+	   c.listOfElevators = append(c.listOfElevators, Elevator{i+1,"idle","none",1,0})
    }
 }
 
-func (c Column) getSmallerFloorsGap(){
-	smallestGap := c.listOfElevators[0].floorsGap
-	for i :=0; i <= len(c.listOfElevators); i++{
-		if i < smallestGap{
-		  smallestGap = i
-		  fmt.Println(smallestGap)
+func (c *Column) getSmallerFloorsGap(requestedFloor int){
+	smallestGap := 100
+	for i :=0; i < len(c.listOfElevators); i++{
+		diff := positive(requestedFloor - c.listOfElevators[i].currentFloor)
+		if diff < smallestGap{
+		  smallestGap = diff
 		}
+		fmt.Println("The smallest gap is:", smallestGap)
 	  }
 }
-
+/*
 func (c Column) getSmallerFloorsGap2(){
 	smallestGap := c.listOfElevators[0].floorsGap
 	for _, element := range c.listOfElevators{
-		if element < smallestGap{
+		if smallestGap < element{
 			smallestGap = element
 		}
 	}
 }
-
-
-func (c Column) requestElevator(floorNumber int, direction string){
+*/
+func (c *Column) requestElevator(floorNumber int, direction string){
 
 }
 
 type Elevator struct{
-	id  string
+	id  int
 	state string
 	direction string
 	currentFloor int
@@ -64,7 +83,7 @@ type Elevator struct{
 	
 } 
 
-func (e Elevator) requestfloor(requestedFloor int) {
+func (e *Elevator) requestfloor(requestedFloor int) {
 	//falta push to array
 	fmt.Println("REQUESTED FLOOR:#", requestedFloor)
 	if requestedFloor > e.currentFloor {
@@ -100,34 +119,70 @@ func (e Elevator) requestfloor(requestedFloor int) {
 }//End requestElevator method
 
 func main(){
-	battery1 := Battery{1,4}
-	fmt.Printf("Battery1 id is: %v",battery1.id)
-	columnA := Column{"A",7,-6,1,5,[]Elevator{}}
-	columnB := Column{"B",20,1,20,5,[]Elevator{}}
-	columnC := Column{"C",21,1,40,5,[]Elevator{}}
-	columnD := Column{"D",21,1,60,5,[]Elevator{}}
-	fmt.Println(columnA.floorsNumber)
-	fmt.Println(columnB.floorsNumber)
-	fmt.Println(columnC.floorsNumber)
-	fmt.Println(columnD.floorsNumber)
+	bat := &Battery{1,4,[]Column{}}
+	fmt.Println("Battery1 id is",bat.id)
+	bat.createBattery(4,5)
+	bat.listOfColumns[0].ChangeColumnValues(7,-6,1)
+	bat.listOfColumns[1].ChangeColumnValues(20,1,20)
+	bat.listOfColumns[2].ChangeColumnValues(21,1,40)
+	bat.listOfColumns[3].ChangeColumnValues(21,1,60)
+	//fmt.Println(bat.listOfColumns)
 
-	elevatorA1 := Elevator{"A1","idle","none",1,0}
-	elevatorA2 := Elevator{"A2","idle","none",1,0}
-	elevatorA3 := Elevator{"A3","idle","none",1,0}
-	fmt.Println("Elevator 1 in Column A is at: ",elevatorA1.currentFloor)
-	fmt.Println("Elevator 2 in Column A id is: ",elevatorA2.id)
-	fmt.Println("Elevator 3 in Column A id is: ",elevatorA3.id)
-	
-	//elevatorA1.requestfloor(9) test requestFloor
-	columnA.addElevatorsToColumn(5)
-	elevatorA1.floorsGap = 5
-	elevatorA2.floorsGap = 2
-	columnA.listOfElevators = append(columnA.listOfElevators,elevatorA1)
-	columnA.listOfElevators = append(columnA.listOfElevators,elevatorA2)
-	fmt.Println(columnA.listOfElevators[0].floorsGap)
-	fmt.Println(columnA.listOfElevators[1].floorsGap)
-	fmt.Println(columnA.listOfElevators)
+	bat.listOfColumns[0].listOfElevators[0].currentFloor = 2
+	bat.listOfColumns[0].listOfElevators[1].currentFloor = 2
+	bat.listOfColumns[0].listOfElevators[2].currentFloor = 2
+	bat.listOfColumns[0].listOfElevators[3].currentFloor = 2
+	bat.listOfColumns[0].listOfElevators[4].currentFloor = 6
+	fmt.Println(bat.listOfColumns[0].listOfElevators[0].currentFloor)
 
-	columnA.getSmallerFloorsGap()
+	bat.listOfColumns[0].getSmallerFloorsGap(10)
 }
 
+
+
+
+
+
+
+
+//battery1.listOfColumns[0].listOfElevators = append(battery1.listOfColumns[0].listOfElevators,colA.listOfElevators[0])
+	//battery1.listOfColumns[0].listOfElevators = append(battery1.listOfColumns[0].listOfElevators,elevatorA2)
+	//fmt.Println(battery1.listOfColumns[0].listOfElevators[0].floorsGap)
+	//fmt.Println(battery1.listOfColumns[0].listOfElevators[1].floorsGap)
+	//fmt.Println("Elevator 3 in Column A id is: ",elevatorA3.id)
+	
+	//elevatorA1.requestfloor(9) test requestFloor
+	//battery1.listOfColumns[0].addElevatorsToColumn(5)
+	//fmt.Println("Elevator 3 in Column A id is: ",elevatorA3.id)
+	
+	//elevatorA1.requestfloor(9) test requestFloor
+	//battery1.listOfColumns[0].addElevatorsToColumn(5)
+	//colA.listOfElevators = append(colA.listOfElevators, Elevator{"A1","idle","none",1,0})
+	//colA.listOfElevators = append(colA.listOfElevators, Elevator{"A2","idle","none",1,0})
+	//elevatorA2 := Elevator{"A2","idle","none",1,0}
+	//elevatorA3 := Elevator{"A3","idle","none",1,0}
+	//fmt.Println(columnB.floorsNumber)
+	//fmt.Println(columnC.floorsNumber)
+	//fmt.Println(columnD.floorsNumber)
+	//columnB := Column{"B",20,1,20,5,[]Elevator{}}
+	//columnC := Column{"C",21,1,40,5,[]Elevator{}}
+	//columnD := Column{"D",21,1,60,5,[]Elevator{}}
+
+	/* battery1.listOfColumns = append(battery1.listOfColumns, Column{"A",7,-6,1,5,[]Elevator{}})
+	
+	fmt.Println(battery1.listOfColumns[0].floorsNumber)
+	
+	colA := battery1.listOfColumns[0]
+	
+	
+	fmt.Println("Elevator 1 in Column A is at: ",colA.listOfElevators[0].currentFloor)
+	fmt.Println("Elevator 2 in Column A id is: ",colA.listOfElevators[1].id)
+	
+	colA.listOfElevators[0].currentFloor = 2
+	colA.listOfElevators[1].currentFloor = 5
+	
+	fmt.Println(colA.listOfElevators)
+
+	colA.getSmallerFloorsGap(10) */
+
+	
