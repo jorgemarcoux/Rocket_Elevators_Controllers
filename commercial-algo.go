@@ -51,25 +51,28 @@ func (c *Column) createColumn(numberOfElevators int){
 }
 
 func (c *Column) getSmallerFloorsGap(requestedFloor int){
-	smallestGap := 100
-	for i :=0; i < len(c.listOfElevators); i++{
-		diff := positive(requestedFloor - c.listOfElevators[i].currentFloor)
-		if diff < smallestGap{
-		  smallestGap = diff
-		}
-		fmt.Println("The smallest gap is:", smallestGap)
-	  }
-}
-/*
-func (c Column) getSmallerFloorsGap2(){
 	smallestGap := c.listOfElevators[0].floorsGap
-	for _, element := range c.listOfElevators{
-		if smallestGap < element{
-			smallestGap = element
+	for i :=0; i < len(c.listOfElevators); i++{
+		c.listOfElevators[i].floorsGap = positive(requestedFloor - c.listOfElevators[i].currentFloor)
+		if c.listOfElevators[i].floorsGap < smallestGap{
+		  smallestGap = c.listOfElevators[i].floorsGap
+		}
+		
+	  }
+	  fmt.Println("The smallest gap is:", smallestGap)
+}
+
+func (c Column) getIdleElevators(){
+	var idleElevators = 0
+	for i :=0; i < len(c.listOfElevators); i++{
+		if c.listOfElevators[i].state == "idle"{
+			idleElevators ++
+			//TO DO: Append to new array IdleElevators to have access to those elevators
 		}
 	}
+	fmt.Println("Idle elevators:", idleElevators)
 }
-*/
+
 func (c *Column) requestElevator(floorNumber int, direction string){
 
 }
@@ -134,55 +137,31 @@ func main(){
 	bat.listOfColumns[0].listOfElevators[3].currentFloor = 2
 	bat.listOfColumns[0].listOfElevators[4].currentFloor = 6
 	fmt.Println(bat.listOfColumns[0].listOfElevators[0].currentFloor)
-
 	bat.listOfColumns[0].getSmallerFloorsGap(10)
+
+	bat.listOfColumns[0].listOfElevators[4].state = "moving"
+	bat.listOfColumns[0].getIdleElevators()
+
+	
 }
 
 
+//Future functions
+/*
+func (c Column) getIdleElevators(){
+	var count = 0
+	for i :=0; i < 6; i++{
+		if c.listOfElevators[i].state == "idle"{
+			count ++
+		}
+	}
+	fmt.Println("Idle elevators:", count)
+}
+*/
 
 
 
 
 
-
-//battery1.listOfColumns[0].listOfElevators = append(battery1.listOfColumns[0].listOfElevators,colA.listOfElevators[0])
-	//battery1.listOfColumns[0].listOfElevators = append(battery1.listOfColumns[0].listOfElevators,elevatorA2)
-	//fmt.Println(battery1.listOfColumns[0].listOfElevators[0].floorsGap)
-	//fmt.Println(battery1.listOfColumns[0].listOfElevators[1].floorsGap)
-	//fmt.Println("Elevator 3 in Column A id is: ",elevatorA3.id)
-	
-	//elevatorA1.requestfloor(9) test requestFloor
-	//battery1.listOfColumns[0].addElevatorsToColumn(5)
-	//fmt.Println("Elevator 3 in Column A id is: ",elevatorA3.id)
-	
-	//elevatorA1.requestfloor(9) test requestFloor
-	//battery1.listOfColumns[0].addElevatorsToColumn(5)
-	//colA.listOfElevators = append(colA.listOfElevators, Elevator{"A1","idle","none",1,0})
-	//colA.listOfElevators = append(colA.listOfElevators, Elevator{"A2","idle","none",1,0})
-	//elevatorA2 := Elevator{"A2","idle","none",1,0}
-	//elevatorA3 := Elevator{"A3","idle","none",1,0}
-	//fmt.Println(columnB.floorsNumber)
-	//fmt.Println(columnC.floorsNumber)
-	//fmt.Println(columnD.floorsNumber)
-	//columnB := Column{"B",20,1,20,5,[]Elevator{}}
-	//columnC := Column{"C",21,1,40,5,[]Elevator{}}
-	//columnD := Column{"D",21,1,60,5,[]Elevator{}}
-
-	/* battery1.listOfColumns = append(battery1.listOfColumns, Column{"A",7,-6,1,5,[]Elevator{}})
-	
-	fmt.Println(battery1.listOfColumns[0].floorsNumber)
-	
-	colA := battery1.listOfColumns[0]
-	
-	
-	fmt.Println("Elevator 1 in Column A is at: ",colA.listOfElevators[0].currentFloor)
-	fmt.Println("Elevator 2 in Column A id is: ",colA.listOfElevators[1].id)
-	
-	colA.listOfElevators[0].currentFloor = 2
-	colA.listOfElevators[1].currentFloor = 5
-	
-	fmt.Println(colA.listOfElevators)
-
-	colA.getSmallerFloorsGap(10) */
 
 	
