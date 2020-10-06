@@ -51,7 +51,7 @@ func (c *Column) createColumn(numberOfElevators int){
 }
 
 func (c *Column) getSmallerFloorsGap(requestedFloor int){
-	smallestGap := c.listOfElevators[0].floorsGap
+	smallestGap := 100
 	for i :=0; i < len(c.listOfElevators); i++{
 		c.listOfElevators[i].floorsGap = positive(requestedFloor - c.listOfElevators[i].currentFloor)
 		if c.listOfElevators[i].floorsGap < smallestGap{
@@ -64,18 +64,34 @@ func (c *Column) getSmallerFloorsGap(requestedFloor int){
 
 func (c Column) getIdleElevators(){
 	var idleElevators = 0
+	var idleElevList []Elevator
 	for i :=0; i < len(c.listOfElevators); i++{
 		if c.listOfElevators[i].state == "idle"{
 			idleElevators ++
-			//TO DO: Append to new array IdleElevators to have access to those elevators
+			idleElevList = append(idleElevList,c.listOfElevators[i])
 		}
 	}
-	fmt.Println("Idle elevators:", idleElevators)
+	fmt.Println("Idle elevators:",idleElevators,"List of idle elevators:" ,idleElevList)
 }
 
 func (c *Column) requestElevator(floorNumber int, direction string){
+	var elevInSameFloor []Elevator
+	for i :=0; i < len(c.listOfElevators); i++{
+		//Chcking if there's an elevator already at floorNumber
+		if c.listOfElevators[i].currentFloor == floorNumber && c.listOfElevators[i].direction == direction{
+			elevInSameFloor = append(elevInSameFloor,c.listOfElevators[i])
+			fmt.Println("Scenario - call from floor #",floorNumber, "going", direction, "should send elevator",elevInSameFloor[0].id)
+			fmt.Println("Elevator #",elevInSameFloor[0].id, "is already at floor #", floorNumber)
+		}
+		//Checking elevators going in same direction as requested direction
+		if c.listOfElevators[i].direction == "up" && direction == "up"{
+           
+		}
+	}//Closing for iterating c.listOfElevators
+	
 
-}
+	
+}//Closing requestElevator
 
 type Elevator struct{
 	id  int
@@ -135,12 +151,16 @@ func main(){
 	bat.listOfColumns[0].listOfElevators[1].currentFloor = 2
 	bat.listOfColumns[0].listOfElevators[2].currentFloor = 2
 	bat.listOfColumns[0].listOfElevators[3].currentFloor = 2
-	bat.listOfColumns[0].listOfElevators[4].currentFloor = 6
+	bat.listOfColumns[0].listOfElevators[4].currentFloor = 8
 	fmt.Println(bat.listOfColumns[0].listOfElevators[0].currentFloor)
 	bat.listOfColumns[0].getSmallerFloorsGap(10)
 
-	bat.listOfColumns[0].listOfElevators[4].state = "moving"
-	bat.listOfColumns[0].getIdleElevators()
+	//bat.listOfColumns[0].listOfElevators[4].state = "moving"
+	//bat.listOfColumns[0].getIdleElevators()
+
+	//testing requestElevator
+	bat.listOfColumns[0].listOfElevators[4].direction = "up"
+	bat.listOfColumns[0].requestElevator(8, "up")
 
 	
 }
@@ -148,16 +168,23 @@ func main(){
 
 //Future functions
 /*
-func (c Column) getIdleElevators(){
-	var count = 0
+func (c Column) getFloorsGap2(state string, direction string){
 	for i :=0; i < 6; i++{
-		if c.listOfElevators[i].state == "idle"{
-			count ++
+		if c.listOfElevators[i].state == state{
+		   get smallest floorsGap
+		   return elevator
+		}
+		if c.listOfElevators[i].direction == direction{
+			get smallest floorsGap
+			return elevator
 		}
 	}
-	fmt.Println("Idle elevators:", count)
 }
 */
+
+
+
+
 
 
 
