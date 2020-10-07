@@ -96,27 +96,34 @@ func (c *Column) requestElevator(floorNumber int, direction string){
 		//Checking elevators going in same direction as requested direction	
 	   }else if c.listOfElevators[i].direction == "up" && direction == "up" && c.listOfElevators[i].currentFloor <= floorNumber{
 			elevatorsGoingUp = append(elevatorsGoingUp,c.listOfElevators[i])
-			c.getSmallerFloorsGap(elevatorsGoingUp,floorNumber)
-			fmt.Println("Scenario - call from floor #",floorNumber, "going", direction)
-			fmt.Println("Elevator going up and requested direction up")//DELETE
-			fmt.Println("Elevator",chosenElevator.id,"should be sent")
-			elevatorsGoingUp[0].moveElevator(floorNumber)
-			break
+
+			
 	   }else if c.listOfElevators[i].direction == "down" && direction == "down" && c.listOfElevators[i].currentFloor >= floorNumber{
-		    elevatorsGoingDown = append(elevatorsGoingDown,c.listOfElevators[i])
-		    c.getSmallerFloorsGap(elevatorsGoingDown,floorNumber)
-		    fmt.Println("Scenario - call from floor #",floorNumber, "going", direction)
-			fmt.Println("Elevator going down and requested direction down. Elevator's current floor:",chosenElevator.currentFloor)
-			chosenElevator.moveElevator(floorNumber)
-			break
+			elevatorsGoingDown = append(elevatorsGoingDown,c.listOfElevators[i])
+			
 	   //Checking if elevator's next stop == floorNumber and choose smallest gap
 	   }else if c.listOfElevators[i].nextFloor == floorNumber{
-		   elevToNextFloor = append(elevToNextFloor, c.listOfElevators[i])
-		   c.getSmallerFloorsGap(elevToNextFloor,floorNumber)
-		   fmt.Println("Elevator",chosenElevator.id,"at floor#",chosenElevator.currentFloor,"is chosen")
-		   chosenElevator.moveElevator(floorNumber)
-		   
-	}//MISSING Prioritizing moving elevator versus idle one /*else if c.listOfElevators[i].state == "moving"{
+			elevToNextFloor = append(elevToNextFloor, c.listOfElevators[i])		   
+	   }
+	   //Waiting till end of loop to call getSmallerFloorsGap and move chosen elevator
+	   if i == 4 && len(elevatorsGoingUp) > 0{
+		c.getSmallerFloorsGap(elevatorsGoingUp,floorNumber)
+		fmt.Println("Scenario - call from floor #",floorNumber, "going", direction)
+		fmt.Println("Elevator going up and requested direction up")//DELETE
+		fmt.Println("Elevator",chosenElevator.id,"should be sent")
+		elevatorsGoingUp[0].moveElevator(floorNumber)
+
+	  }else if i == 4 && len(elevatorsGoingDown) > 0{
+		c.getSmallerFloorsGap(elevatorsGoingDown,floorNumber)
+		fmt.Println("Scenario - call from floor #",floorNumber, "going", direction)
+		fmt.Println("Elevator",chosenElevator.id, "is sent")
+		fmt.Println("Elevator going down and requested direction down. Elevator's current floor:",chosenElevator.currentFloor)
+		chosenElevator.moveElevator(floorNumber)
+
+	  }else if i == 4 && len(elevToNextFloor) > 0{
+		c.getSmallerFloorsGap(elevToNextFloor,floorNumber)
+		chosenElevator.moveElevator(floorNumber)
+	  }
 
 	}//Closing for iterating c.listOfElevators
 	
@@ -137,7 +144,7 @@ type Elevator struct{
 func (e Elevator) moveElevator(requestedFloor int){
 	if requestedFloor > e.currentFloor{
 		e.direction = "up"
-		fmt.Println("Elevator direction:", e.direction)
+		fmt.Println("Elevator",chosenElevator.id,"at floor",chosenElevator.currentFloor,"direction is", e.direction)
 		for e.currentFloor < requestedFloor {
 			e.currentFloor += 1 // Incrementing currentfloor since direction is up
 			fmt.Println("Elevator", e.id, "is at floor #", e.currentFloor)
@@ -152,10 +159,10 @@ func (e Elevator) moveElevator(requestedFloor int){
 				time.Sleep(100 * time.Millisecond)
 				fmt.Println("Closing doors...")
 			}
-		}
+		}//Checking for direction down
 	}else if requestedFloor < e.currentFloor{
 		e.direction = "down"
-		fmt.Println("Elevator direction:", e.direction)
+		fmt.Println("Elevator",chosenElevator.id,"at floor",chosenElevator.currentFloor,"direction is", e.direction)
 		for e.currentFloor > requestedFloor{
 			e.currentFloor -= 1 // Decreaing currentfloor since direction is down
 			fmt.Println("Elevator", e.id, "is at floor #", e.currentFloor)
@@ -173,11 +180,10 @@ func (e Elevator) moveElevator(requestedFloor int){
 		}
 
 	}
- }
+ }//End moveElevator method
 
 
 func (e *Elevator) requestfloor(requestedFloor int) {
-	//falta push to array
 	fmt.Println("REQUESTED FLOOR:#", requestedFloor)
 	if requestedFloor > e.currentFloor {
 		e.direction = "up"
@@ -209,23 +215,22 @@ func (e *Elevator) requestfloor(requestedFloor int) {
         time.Sleep(100 * time.Millisecond);
 	}
 
-}//End requestElevator method
+}//End requestFloor method
 
 func main(){
 	bat := &Battery{1,4,[]Column{}}
-	//fmt.Println("Battery1 id is",bat.id)
 	bat.createBattery(4,5)
 	bat.listOfColumns[0].ChangeColumnValues(7,-6,1)
 	bat.listOfColumns[1].ChangeColumnValues(20,1,20)
 	bat.listOfColumns[2].ChangeColumnValues(21,1,40)
 	bat.listOfColumns[3].ChangeColumnValues(21,1,60)
-	//fmt.Println(bat.listOfColumns)
+	
 
 
 
 //******************************testing requestElevator***********************************
-//****************SCENARIO 1 problem with 'break' sends 1 elevator, not the right one*************************************
-  
+//****************SCENARIO 1 WORKING PROPERLY*************************************
+ /*
     fmt.Println("Scenario 1 - call from floor # 1 should send elevator 5")
 	bat.listOfColumns[1].listOfElevators[0].currentFloor = 20
 	bat.listOfColumns[1].listOfElevators[0].direction = "down"
@@ -241,10 +246,10 @@ func main(){
 	bat.listOfColumns[1].listOfElevators[4].direction = "down"
 	bat.listOfColumns[1].listOfElevators[4].nextFloor = 1
 	bat.listOfColumns[1].requestElevator(1, "up")
+*/
 
-
-//*********SCENARIO 2 WORKIN PROPERLY******************************************************************************
-  /* 
+//*********SCENARIO 2 WORKING PROPERLY******************************************************************************
+ /* 
    bat.listOfColumns[2].listOfElevators[0].currentFloor = 1
    bat.listOfColumns[2].listOfElevators[0].direction = "up"
    bat.listOfColumns[2].listOfElevators[1].currentFloor = 23
@@ -258,7 +263,7 @@ func main(){
    bat.listOfColumns[2].requestElevator(1, "up")
 */
 
-//********SCENARIO 3 WORKING PROPERYL********************************************
+//********SCENARIO 3 WORKING PROPERLY********************************************
 /*
   bat.listOfColumns[3].listOfElevators[0].currentFloor = 58
   bat.listOfColumns[3].listOfElevators[0].direction = "down"
@@ -272,7 +277,7 @@ func main(){
   bat.listOfColumns[3].listOfElevators[4].direction = "down"
   bat.listOfColumns[3].requestElevator(54, "down")
 */
-//********SCENARIO 4 WORKING PROPERLY***************************
+//********SCENARIO 4 ***************************
 /*
 	bat.listOfColumns[0].listOfElevators[0].currentFloor = -4
 	bat.listOfColumns[0].listOfElevators[0].state = "idle"
