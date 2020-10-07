@@ -6,6 +6,8 @@ import (
 	
 )
 
+var chosenElevator Elevator
+
 func positive(n int) int {
     if n < 0 {
         n *= -1
