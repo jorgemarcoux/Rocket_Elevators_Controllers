@@ -96,7 +96,6 @@ func (c *Column) requestElevator(floorNumber int, direction string){
 		//Checking elevators going in same direction as requested direction	
 	   }else if c.listOfElevators[i].direction == "up" && direction == "up" && c.listOfElevators[i].currentFloor <= floorNumber{
 			elevatorsGoingUp = append(elevatorsGoingUp,c.listOfElevators[i])
-
 			
 	   }else if c.listOfElevators[i].direction == "down" && direction == "down" && c.listOfElevators[i].currentFloor >= floorNumber{
 			elevatorsGoingDown = append(elevatorsGoingDown,c.listOfElevators[i])

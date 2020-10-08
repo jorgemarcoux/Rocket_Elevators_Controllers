@@ -92,3 +92,5 @@ namespace Rocket_Elevators_Controllers
 }//Closing  namespace
 
     
+//Original config debugging
+${workspaceFolder}/bin/Debug/<target-framework>/<project-name.dll>
