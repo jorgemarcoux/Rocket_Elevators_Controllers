@@ -1,0 +1,13 @@
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\bin\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.exe
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\bin\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.deps.json
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\bin\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.runtimeconfig.json
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\bin\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.runtimeconfig.dev.json
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\bin\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.dll
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\bin\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.pdb
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\obj\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.csprojAssemblyReference.cache
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\obj\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.AssemblyInfoInputs.cache
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\obj\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.AssemblyInfo.cs
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\obj\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.csproj.CoreCompileInputs.cache
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\obj\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.dll
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\obj\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.pdb
+C:\Users\Jorge\OneDrive\Mentors and self-education\Code\CodeBoxx\Bootcamp\Odyssey Week 1 - Algorithms\Rocket_Elevators_Controllers\obj\Debug\netcoreapp3.1\Rocket_Elevators_Controllers.genruntimeconfig.cache

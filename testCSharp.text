@@ -1,0 +1,94 @@
+using System;
+
+namespace Rocket_Elevators_Controllers
+{
+
+     public class Battery     
+    {
+      public int id;
+      public int numberOfColumns; 
+      public List <Columm> listOfColumns = new List<Columm>(); 
+      
+
+      //Battery constructor
+      public createBattery(int numberOfColumns, int elevatorsInColumn)
+      {
+        for (i = 0; i < numberOfColumns; i++)
+        {
+          this.listOfColumns.Add(new Column(i+1,0,0,0,elevatorsInColumn,List<Elevator>));
+          this.listOfColumns[i].createColumn(elevatorsInColumn);
+
+        }
+      }
+      
+
+
+    }//Closing Battery class
+
+
+    public class Column 
+    {
+      public int id;
+      public int floorsNumber;
+      public int minimumFloor;
+      public int maximumFloor;
+      public int elevatorsInColumn;
+      public List <Elevator>  listOfElevators = new List<Elevator>();
+
+
+      public createColumn(int numberOfElevators)
+      {
+          for (i = 0; i < numberOfElevators; i++)
+          {
+            this.listOfElevators.Add(new Elevator(i+1,"idle","none",1,0,0));
+          }
+          
+      }
+
+
+    
+           
+
+    }//Closing column class
+
+
+    public class Elevator
+    {
+      public int id;
+      public string state;
+      public string direction;
+      public string currentFloor;
+      public int floorsGap;
+      public int nextFloor;
+
+
+
+    }//Closing Elevator class
+
+
+
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            bat =  new Battery(1,4,List<Columm>); 
+            Console.WriteLine("bat");
+        }
+    }
+}//Closing  namespace
+
+    
