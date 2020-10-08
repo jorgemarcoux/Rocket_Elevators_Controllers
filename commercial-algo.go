@@ -111,7 +111,7 @@ func (c *Column) requestElevator(floorNumber int, direction string){
 		fmt.Println("Scenario - call from floor #",floorNumber, "going", direction)
 		fmt.Println("Elevator going up and requested direction up")//DELETE
 		fmt.Println("Elevator",chosenElevator.id,"should be sent")
-		elevatorsGoingUp[0].moveElevator(floorNumber)
+		chosenElevator.moveElevator(floorNumber)
 
 	  }else if i == 4 && len(elevatorsGoingDown) > 0{
 		c.getSmallerFloorsGap(elevatorsGoingDown,floorNumber)
@@ -195,7 +195,7 @@ func (e *Elevator) requestfloor(requestedFloor int) {
 		} 
 	} else if requestedFloor < e.currentFloor{
 		e.direction = "down"
-		fmt.Println("Elevator",e.id, "is at floor #", e.currentFloor)
+		fmt.Println("Elevator",e.id, "is at floor #", e.currentFloor,"Direction =", e.direction)
 		fmt.Println("Moving to floor #",requestedFloor)
 		for requestedFloor < e.currentFloor {
 			e.currentFloor -=1
@@ -293,8 +293,8 @@ func main(){
 */
 //************************************************************************
 //******Testing requestFloor**********************************************
-//bat.listOfColumns[1].listOfElevators[0].currentFloor = 8
-//bat.listOfColumns[1].listOfElevators[0].requestfloor(20)
+bat.listOfColumns[1].listOfElevators[0].currentFloor = 8
+bat.listOfColumns[1].listOfElevators[0].requestfloor(1)
 //************************************************************************
 }
 
