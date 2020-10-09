@@ -29,5 +29,14 @@ You can also test the requestFloor method (the one that brings an user to a requ
 <br>  
 NOTE: The Ruby version of the algorithm is not finished yet.
 
+<h2>Commercial Alogrithm</h2>
+This algorithm was build for a commercial building with 66 floors, 4 columns and 5 elevators per column. I coded it in <strong>C#</strong>, <strong>Golang</strong> and <strong>Java</strong>.
+<br>
+As in the residential algorithm, each file contains 4 scenarios to test if the best elevator possible is being send on each request (the <em>requestElevator</em> method).
+There are also 2 scenarios for the <em>requestFloor method</em>, that is to say when we request a floor inside an elevator and it takes us to our desired destination. Don't forget to uncomment them to make them work.
+<br>
+The main program in Java is found in the <a href="https://github.com/jorgemarcoux/Rocket_Elevators_Controllers/blob/master/CommercialAlgo/src/commercialAlgoJava/TestingGround.java">TestingGround.java</a> file. (CommercialAlgo->src/commercialAlgoJava->TestingGround.java). The Elevator, Column and Battery classes are contained in different files.
+
+
 Enjoy! 💻
 

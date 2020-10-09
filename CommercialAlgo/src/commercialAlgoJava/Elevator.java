@@ -40,7 +40,7 @@ public class Elevator {
             System.out.println("Elevator "+ this.id+ " is at floor # "+ this.currentFloor);
          }
       }
-      if (this.currentFloor == floorNumber){
+      if (this.currentFloor == floorNumber){//When elevator has arrived to its destination:
     	  System.out.println("Elevator stopped");
         System.out.println("Elevator "+ this.id+ " arrived at target floor");
         System.out.println("Opening doors...");
@@ -57,7 +57,7 @@ public class Elevator {
       this.direction = "up";
       System.out.println("Elevator "+ this.id+ " at floor #"+ this.currentFloor+ " direction is " + this.direction);
       while (this.currentFloor < floorNumber){
-        this.currentFloor ++;
+        this.currentFloor ++;// Incrementing currentfloor since direction is up
         System.out.println("Elevator "+ this.id+ " is at floor #"+ this.currentFloor);
         if (this.currentFloor == floorNumber){
         	System.out.println("Elevator stopped");
@@ -69,12 +69,12 @@ public class Elevator {
         }
              }
            }else if (floorNumber < this.currentFloor){
-           this.direction = "down";
+           this.direction = "down";//Checking for direction down
            System.out.println("Elevator "+this.id+ " at floor #"+ this.currentFloor+ " direction is "+ this.direction);
            while (this.currentFloor > floorNumber){
-             this.currentFloor--;
+             this.currentFloor--;// Decreasing currentfloor since direction is down
              System.out.println("Elevator "+this.id+ " is at floor #"+this.currentFloor);
-             if (this.currentFloor == floorNumber){
+             if (this.currentFloor == floorNumber){//When elevator has arrived to its destination:
             	 System.out.println("Elevator stopped");
                System.out.println("Elevator "+ this.id+ " arrived to target floor");
                System.out.println("Opening doors");

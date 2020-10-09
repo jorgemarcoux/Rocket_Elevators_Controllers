@@ -9,7 +9,7 @@ import (
 var chosenElevator Elevator
 var smallestGap = 100
 
-func positive(n int) int {
+func positive(n int) int { //Converting negative numbers to absolute values
     if n < 0 {
         n *= -1
     }
@@ -21,7 +21,7 @@ type Battery struct{
 	numberOfColumns int
 	listOfColumns []Column
 }
-
+//Creating battery of columns.
 func (b *Battery) createBattery(numberOfColumns int, _elevatorsInColumn int){
      for i :=0; i < numberOfColumns; i++{
 		 b.listOfColumns = append(b.listOfColumns, Column{i+1,0,0,0,_elevatorsInColumn,[]Elevator{}})
@@ -37,10 +37,9 @@ type Column struct{
 	maximumFloor int
 	elevatorsInColumn int
 	listOfElevators []Elevator
-	//requestedFloorsQueue [] int
 	
 }
-
+//Update column values after creating each column with tame values with the createBattery method
 func (c *Column) ChangeColumnValues(_floorNumber int, _minimumFloor int,_maximumFloor int){
 	c.floorsNumber = _floorNumber
 	c.minimumFloor = _minimumFloor
@@ -54,31 +53,19 @@ func (c *Column) createColumn(numberOfElevators int){
    }
 }
 
-
+//Method to get the elevator with smallest floorGap (requestedFloor-elevator.currentFloor)
+//It takes a list of elevator as a parameter to loop  throught it and find the smallestGap. 
 func (c *Column) getSmallerFloorsGap(array []Elevator, floorNumber int){
 	for i :=0; i < len(array); i++{
 		array[i].floorsGap = positive(floorNumber - array[i].currentFloor)
 		if array[i].floorsGap < smallestGap{
 		  smallestGap = array[i].floorsGap
-		  chosenElevator = array[i]
+		  chosenElevator = array[i]//chosenElevator is the one witht the smallestGap
 		}
 		
 	  }
-	  //fmt.Println("Smallest floors gap:", smallestGap,".Elevator sent:",chosenElevator.id)
 }
 
-//get rid of this 
-func (c Column) getIdleElevators(){
-	var idleElevators = 0
-	var idleElevList []Elevator
-	for i :=0; i < len(c.listOfElevators); i++{
-		if c.listOfElevators[i].state == "idle"{
-			idleElevators ++
-			idleElevList = append(idleElevList,c.listOfElevators[i])
-		}
-	}
-	fmt.Println("Idle elevators:",idleElevators,"List of idle elevators:" ,idleElevList)
-}
 
 func (c *Column) requestElevator(floorNumber int, direction string){
 	var elevInSameFloor []Elevator//Contains elevators already in same floor as floorNumber
@@ -93,18 +80,22 @@ func (c *Column) requestElevator(floorNumber int, direction string){
 			fmt.Println("Elevator #",elevInSameFloor[0].id, "is already at floor #", floorNumber)
 			elevInSameFloor[0].moveElevator(floorNumber)
 			break
-		//Checking elevators going in same direction as requested direction	
+		//Checking elevators going in same direction as requested direction. Putting those elevators
+        //inside the elevatorsGoingUp OR the elevatorsGoingDown array.
 	   }else if c.listOfElevators[i].direction == "up" && direction == "up" && c.listOfElevators[i].currentFloor <= floorNumber{
 			elevatorsGoingUp = append(elevatorsGoingUp,c.listOfElevators[i])
 			
 	   }else if c.listOfElevators[i].direction == "down" && direction == "down" && c.listOfElevators[i].currentFloor >= floorNumber{
 			elevatorsGoingDown = append(elevatorsGoingDown,c.listOfElevators[i])
 			
-	   //Checking if elevator's next stop == floorNumber and choose smallest gap
+	   //Checking if elevator's next stop == floorNumber and choose smallest gap.
+	   //Putting those elevators inside the elevToNextFloor array.
 	   }else if c.listOfElevators[i].nextFloor == floorNumber{
 			elevToNextFloor = append(elevToNextFloor, c.listOfElevators[i])		   
 	   }
-	   //Waiting till end of loop to call getSmallerFloorsGap on the arrays and move chosen elevator
+	  //Waiting till end of loop to call getSmallerFloorsGap and move chosen elevator. We call the 
+	 //getSmallerFloorsGap method and pass the arrays as parameters to get 
+	 //the 'chosenElevator' (the one with the smallest floorsGap)
 	   if i == 4 && len(elevatorsGoingUp) > 0{
 		c.getSmallerFloorsGap(elevatorsGoingUp,floorNumber)
 		fmt.Println("Scenario - call from floor #",floorNumber, "going", direction)
@@ -127,7 +118,6 @@ func (c *Column) requestElevator(floorNumber int, direction string){
 	}//Closing for iterating c.listOfElevators
 	
 
-	
 }//Closing requestElevator
 
 type Elevator struct{
@@ -140,6 +130,7 @@ type Elevator struct{
 	
 } 
 
+//Method to move elvator to requested floor
 func (e Elevator) moveElevator(requestedFloor int){
 	if requestedFloor > e.currentFloor{
 		e.direction = "up"
@@ -163,7 +154,7 @@ func (e Elevator) moveElevator(requestedFloor int){
 		e.direction = "down"
 		fmt.Println("Elevator",chosenElevator.id,"at floor",chosenElevator.currentFloor,"direction is", e.direction)
 		for e.currentFloor > requestedFloor{
-			e.currentFloor -= 1 // Decreaing currentfloor since direction is down
+			e.currentFloor -= 1 // Decreasing currentfloor since direction is down
 			fmt.Println("Elevator", e.id, "is at floor #", e.currentFloor)
 			if e.currentFloor == requestedFloor{ //When elevators arrives at the requested floor...
 				fmt.Println("Elevator stopped")
@@ -228,7 +219,7 @@ func main(){
 
 
 //******************************testing requestElevator***********************************
-//****************SCENARIO 1 WORKING PROPERLY*************************************
+//****************SCENARIO 1*************************************
  /*
     fmt.Println("Scenario 1 - call from floor # 1 should send elevator 5")
 	bat.listOfColumns[1].listOfElevators[0].currentFloor = 20
@@ -245,10 +236,10 @@ func main(){
 	bat.listOfColumns[1].listOfElevators[4].direction = "down"
 	bat.listOfColumns[1].listOfElevators[4].nextFloor = 1
 	bat.listOfColumns[1].requestElevator(1, "up")
-*/
+ */
 
-//*********SCENARIO 2 WORKING PROPERLY******************************************************************************
-  /*
+//*********SCENARIO 2 *******************************************************
+ /* 
    bat.listOfColumns[2].listOfElevators[0].currentFloor = 1
    bat.listOfColumns[2].listOfElevators[0].direction = "up"
    bat.listOfColumns[2].listOfElevators[1].currentFloor = 23
@@ -260,10 +251,10 @@ func main(){
    bat.listOfColumns[2].listOfElevators[4].currentFloor = 39
    bat.listOfColumns[2].listOfElevators[4].direction = "down"
    bat.listOfColumns[2].requestElevator(1, "up")
-*/
+ */
 
 //********SCENARIO 3 WORKING PROPERLY********************************************
-/*
+ /*
   bat.listOfColumns[3].listOfElevators[0].currentFloor = 58
   bat.listOfColumns[3].listOfElevators[0].direction = "down"
   bat.listOfColumns[3].listOfElevators[1].currentFloor = 50
@@ -275,9 +266,9 @@ func main(){
   bat.listOfColumns[3].listOfElevators[4].currentFloor = 60
   bat.listOfColumns[3].listOfElevators[4].direction = "down"
   bat.listOfColumns[3].requestElevator(54, "down")
-*/
+ */
 //********SCENARIO 4 ***************************
-/*
+ /*
 	bat.listOfColumns[0].listOfElevators[0].currentFloor = -4
 	bat.listOfColumns[0].listOfElevators[0].state = "idle"
 	bat.listOfColumns[0].listOfElevators[1].currentFloor = 1
@@ -289,7 +280,7 @@ func main(){
 	bat.listOfColumns[0].listOfElevators[4].currentFloor = -1
 	bat.listOfColumns[0].listOfElevators[4].direction = "down"
 	bat.listOfColumns[0].requestElevator(-3, "up")
-*/
+  */
 //************************************************************************
 //******Testing requestFloor**********************************************
 //bat.listOfColumns[1].listOfElevators[0].currentFloor = 8

@@ -36,7 +36,7 @@ namespace Rocket_Elevators_Controllers
       public int elevatorsInColumn;
       public Elevator[] listOfElevators = new Elevator[5];
       public List<Elevator> elevInSameFloor = new List<Elevator>();//Contains elevators already in same floor as floorNumber
-      public List<Elevator> elevatorsGoingUp = new List<Elevator>();//Contains elevators goinf up
+      public List<Elevator> elevatorsGoingUp = new List<Elevator>();//Contains elevators going up
       public List<Elevator> elevatorsGoingDown = new List<Elevator>();//Contains elevators going down
       public List<Elevator> elevToNextFloor = new List<Elevator>();//Contains elevators which next stop is floorNumber
       public Elevator chosenElevator;
@@ -62,13 +62,14 @@ namespace Rocket_Elevators_Controllers
          
       }
 
-      //Method to get the elevator with smallest floorGap
+      //Method to get the elevator with smallest floorGap (requestedFloor-elevator.currentFloor)
+      //It takes a list of elevator as a parameter to loop it and find the smallestGap. 
       public void getSmallerFloorsGap(List<Elevator> List, int floorNumber){
          for(int i=0; i < List.Count; i++){
              List[i].floorsGap = Math.Abs(floorNumber - List[i].currentFloor);
              if(List[i].floorsGap < smallestGap){
                smallestGap = List[i].floorsGap;
-               this.chosenElevator = List[i];
+               this.chosenElevator = List[i];//chosenElevator is the one witht the smallestGap
              }
          } 
       }
@@ -77,23 +78,26 @@ namespace Rocket_Elevators_Controllers
       public void requestElevator(int floorNumber, string direction)
       {
         for( int i =0;i < this.listOfElevators.Length;i++){
-          //Chcking if there's an elevator already at floorNumber going to same direction
+          //Cheking if there's an elevator already at floorNumber going to same direction
           if(this.listOfElevators[i].currentFloor == floorNumber && this.listOfElevators[i].direction == direction){
              this.elevInSameFloor.Add(this.listOfElevators[i]);
              Console.WriteLine("Scenario - call from floor # "+floorNumber+ " going "+ direction+ " should send elevator "+ elevInSameFloor[0].id);
              Console.WriteLine("Elevator # "+ this.elevInSameFloor[0].id + " is already at floor #"+ floorNumber);
              this.elevInSameFloor[0].moveElevator(floorNumber);
              
-          //Checking elevators going in same direction as requested direction	
+          //Checking elevators going in same direction as requested direction. Putting those elevators
+          //inside the elevatorsGoingUp OR the elevatorsGoingDown array.	
           }else if (this.listOfElevators[i].direction == "up" && direction == "up" && this.listOfElevators[i].currentFloor <= floorNumber){
              this.elevatorsGoingUp.Add(this.listOfElevators[i]);
           }else if(this.listOfElevators[i].direction == "down" && direction == "down" && this.listOfElevators[i].currentFloor >= floorNumber){
              this.elevatorsGoingDown.Add(this.listOfElevators[i]);
-          //Checking if elevator's next stop == floorNumber and choose smallest gap
+          //Checking if elevator's next stop == floorNumber and choose smallest gap and putting those elevators
+          //inside the elevToNextFloor array.
           }else if(this.listOfElevators[i].nextFloor == floorNumber){
              this.elevToNextFloor.Add(this.listOfElevators[i]);
           }
-          //Waiting till end of loop to call getSmallerFloorsGap and move chosen elevator
+          //Waiting till end of loop to call getSmallerFloorsGap and move chosen elevator. We call the 
+          //getSmallerFloorsGap method and pass the arrays as parameters to get the 'chosenElevator' (the one with the smallest floorsGap)
           if(i == 4 && this.elevatorsGoingUp.Count > 0){
              this.getSmallerFloorsGap(this.elevatorsGoingUp,floorNumber);
              Console.WriteLine("Scenario - call from floor # "+ floorNumber+ " going "+ direction);
@@ -105,7 +109,6 @@ namespace Rocket_Elevators_Controllers
              Console.WriteLine("Scenario - call from floor # "+ floorNumber+ " going "+ direction);
              Console.WriteLine("Elevator "+this.chosenElevator.id+ " is sent");
              this.chosenElevator.moveElevator(floorNumber);
-             
 
           }else if(i == 4 && this.elevToNextFloor.Count > 0){
              this.getSmallerFloorsGap(this.elevToNextFloor,floorNumber);
@@ -116,8 +119,6 @@ namespace Rocket_Elevators_Controllers
          
       }//Closing requestElevator
 
-
-    
            
 
     }//Closing column class
@@ -165,7 +166,7 @@ namespace Rocket_Elevators_Controllers
               this.currentFloor --;
               Console.WriteLine("Elevator "+ this.id+ " is at floor # "+ this.currentFloor);
            }
-        }
+        }//When elevator has arrived to its destination:
         if (this.currentFloor == floorNumber){
           Console.WriteLine("Elevator stopped");
           Thread.Sleep(1000);
@@ -187,7 +188,7 @@ namespace Rocket_Elevators_Controllers
         this.direction = "up";
         Console.WriteLine("Elevator "+ this.id+ " at floor #"+ this.currentFloor+ " direction is " + this.direction);
         while (this.currentFloor < floorNumber){
-          this.currentFloor ++;
+          this.currentFloor ++;// Incrementing currentfloor since direction is up
           Console.WriteLine("Elevator "+ this.id+ " is at floor #"+ this.currentFloor);
           if (this.currentFloor == floorNumber){
             Console.WriteLine("Elevator stopped");
@@ -201,14 +202,14 @@ namespace Rocket_Elevators_Controllers
             Console.WriteLine("Closing doors...");
         
           }
-               }
+               }//Checking for direction down
              }else if (floorNumber < this.currentFloor){
              this.direction = "down";
              Console.WriteLine("Elevator "+this.id+ " at floor #"+ this.currentFloor+ " direction is "+ this.direction);
              while (this.currentFloor > floorNumber){
-               this.currentFloor--;
+               this.currentFloor--;// Decreasing currentfloor since direction is down
                Console.WriteLine("Elevator "+this.id+ " is at floor #"+this.currentFloor);
-               if (this.currentFloor == floorNumber){
+               if (this.currentFloor == floorNumber){//When elevator has arrived to its destination:
                  Console.WriteLine("Elevator stopped");
                  Thread.Sleep(1000);
                  Console.WriteLine("Elevator "+ this.id+ " arrived to target floor");
@@ -249,7 +250,7 @@ namespace Rocket_Elevators_Controllers
             
 
             //****************Testing Section***************
-            //Scenario 1 - WORKING PROPERLY
+            //Scenario 1  
            /*
             Console.WriteLine("Scenario 1 - call from floor # 1 should send elevator 5");
 	          col2.listOfElevators[0].currentFloor = 20;
@@ -266,10 +267,10 @@ namespace Rocket_Elevators_Controllers
 	          col2.listOfElevators[4].direction = "down";
 	          col2.listOfElevators[4].nextFloor = 1;
 	          col2.requestElevator(1, "up");
-           */ 
+           */
            
            //***************************************************
-           //scenario 2 - WORKING PROPERLY - same floor
+           //scenario 2 
            /*
             col3.listOfElevators[0].currentFloor = 1;
             col3.listOfElevators[0].direction = "up";
@@ -285,7 +286,7 @@ namespace Rocket_Elevators_Controllers
            */
 
            //***************************************************
-           //Scenario 3 - WORKING PROPERLY
+           //Scenario 3 
            /*
             col4.listOfElevators[0].currentFloor = 58;
             col4.listOfElevators[0].direction = "down";
@@ -313,8 +314,8 @@ namespace Rocket_Elevators_Controllers
 	          col1.listOfElevators[4].currentFloor = -1;
 	          col1.listOfElevators[4].direction = "down";
 	          col1.requestElevator(-3, "up");
-           
            */
+           
           //***************************************************
             
           //Tests requestFloor method
