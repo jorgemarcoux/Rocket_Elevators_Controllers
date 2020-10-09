@@ -104,7 +104,7 @@ func (c *Column) requestElevator(floorNumber int, direction string){
 	   }else if c.listOfElevators[i].nextFloor == floorNumber{
 			elevToNextFloor = append(elevToNextFloor, c.listOfElevators[i])		   
 	   }
-	   //Waiting till end of loop to call getSmallerFloorsGap and move chosen elevator
+	   //Waiting till end of loop to call getSmallerFloorsGap on the arrays and move chosen elevator
 	   if i == 4 && len(elevatorsGoingUp) > 0{
 		c.getSmallerFloorsGap(elevatorsGoingUp,floorNumber)
 		fmt.Println("Scenario - call from floor #",floorNumber, "going", direction)
@@ -118,7 +118,7 @@ func (c *Column) requestElevator(floorNumber int, direction string){
 		fmt.Println("Elevator",chosenElevator.id, "is sent")
 		fmt.Println("Elevator going down and requested direction down. Elevator's current floor:",chosenElevator.currentFloor)
 		chosenElevator.moveElevator(floorNumber)
-
+		  
 	  }else if i == 4 && len(elevToNextFloor) > 0{
 		c.getSmallerFloorsGap(elevToNextFloor,floorNumber)
 		chosenElevator.moveElevator(floorNumber)
@@ -248,7 +248,7 @@ func main(){
 */
 
 //*********SCENARIO 2 WORKING PROPERLY******************************************************************************
- /* 
+  /*
    bat.listOfColumns[2].listOfElevators[0].currentFloor = 1
    bat.listOfColumns[2].listOfElevators[0].direction = "up"
    bat.listOfColumns[2].listOfElevators[1].currentFloor = 23
@@ -292,8 +292,8 @@ func main(){
 */
 //************************************************************************
 //******Testing requestFloor**********************************************
-bat.listOfColumns[1].listOfElevators[0].currentFloor = 8
-bat.listOfColumns[1].listOfElevators[0].requestfloor(1)
+//bat.listOfColumns[1].listOfElevators[0].currentFloor = 8
+//bat.listOfColumns[1].listOfElevators[0].requestfloor(1)
 //************************************************************************
 }
 

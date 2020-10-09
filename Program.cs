@@ -71,7 +71,6 @@ namespace Rocket_Elevators_Controllers
                this.chosenElevator = List[i];
              }
          } 
-         Console.WriteLine("Smallest gap is "+ smallestGap);
       }
 
       //RequestElevator method
@@ -315,7 +314,7 @@ namespace Rocket_Elevators_Controllers
            */
           //***************************************************
           //Scenario 4 - WORKING PROPERLY
-           void scneario4(){
+           
             col1.listOfElevators[0].currentFloor = -4;
 	          col1.listOfElevators[0].state = "idle";
 	          col1.listOfElevators[1].currentFloor = 1;
@@ -327,8 +326,8 @@ namespace Rocket_Elevators_Controllers
 	          col1.listOfElevators[4].currentFloor = -1;
 	          col1.listOfElevators[4].direction = "down";
 	          col1.requestElevator(-3, "up");
-           };
-           scneario4();
+           
+           
           //***************************************************
             
           //Tests requestFloor method
