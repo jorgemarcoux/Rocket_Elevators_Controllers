@@ -39,7 +39,8 @@ namespace Rocket_Elevators_Controllers
       public List<Elevator> elevatorsGoingUp = new List<Elevator>();//Contains elevators goinf up
       public List<Elevator> elevatorsGoingDown = new List<Elevator>();//Contains elevators going down
       public List<Elevator> elevToNextFloor = new List<Elevator>();//Contains elevators which next stop is floorNumber
-      
+      public Elevator chosenElevator;
+      public int smallestGap = 100;
 
       
      //Column constructor
@@ -59,6 +60,18 @@ namespace Rocket_Elevators_Controllers
             listOfElevators[i] = new Elevator(i+1,"idle","none",1,0,0);
          };
          
+      }
+
+      //Method to get the elevator with smallest floorGap
+      public void getSmallerFloorsGap(List<Elevator> List, int floorNumber){
+         for(int i=0; i < List.Count; i++){
+             List[i].floorsGap = Math.Abs(floorNumber - List[i].currentFloor);
+             if(List[i].floorsGap < smallestGap){
+               smallestGap = List[i].floorsGap;
+               this.chosenElevator = List[i];
+             }
+         } 
+         Console.WriteLine("Smallest gap is "+ smallestGap);
       }
 
       //RequestElevator method
@@ -83,20 +96,21 @@ namespace Rocket_Elevators_Controllers
           }
           //Waiting till end of loop to call getSmallerFloorsGap and move chosen elevator
           if(i == 4 && this.elevatorsGoingUp.Count > 0){
-             this.elevatorsGoingUp.Sort((x, y) => x.floorsGap.CompareTo(y.floorsGap));//sorting elevators to get the one with the smallest floorsGap
+             this.getSmallerFloorsGap(this.elevatorsGoingUp,floorNumber);
              Console.WriteLine("Scenario - call from floor # "+ floorNumber+ " going "+ direction);
-             Console.WriteLine("Elevator "+this.elevatorsGoingUp[0].id+ " should be sent");
-             this.elevatorsGoingUp[0].moveElevator(floorNumber);
+             Console.WriteLine("Elevator "+this.chosenElevator.id+ " is sent");
+             this.chosenElevator.moveElevator(floorNumber); 
 
-          }else if (i == 4 && elevatorsGoingDown.Count > 0){
-             this.elevatorsGoingDown.Sort((x, y) => x.floorsGap.CompareTo(y.floorsGap));
+          }else if (i == 4 && this.elevatorsGoingDown.Count > 0){
+             this.getSmallerFloorsGap(this.elevatorsGoingDown,floorNumber);
              Console.WriteLine("Scenario - call from floor # "+ floorNumber+ " going "+ direction);
-             Console.WriteLine("Elevator "+this.elevatorsGoingDown[0].id+ " should be sent");
+             Console.WriteLine("Elevator "+this.chosenElevator.id+ " is sent");
              this.elevatorsGoingDown[0].moveElevator(floorNumber);
+             
 
-          }else if(i == 4 && elevToNextFloor.Count > 0){
-             this.elevToNextFloor.Sort((x, y) => x.floorsGap.CompareTo(y.floorsGap));
-             this.elevToNextFloor[0].moveElevator(floorNumber);
+          }else if(i == 4 && this.elevToNextFloor.Count > 0){
+             this.getSmallerFloorsGap(this.elevToNextFloor,floorNumber);
+             this.chosenElevator.moveElevator(floorNumber);
           }
 
         }//End for
@@ -131,29 +145,29 @@ namespace Rocket_Elevators_Controllers
         this.nextFloor = _nextFloor; 
       }
 
-      public void requestFloor(int requestedFloor)
+      public void requestFloor(int floorNumber)
       {
-        Console.WriteLine("Requested floor: #"+requestedFloor);
-        if (requestedFloor > this.currentFloor) {
+        Console.WriteLine("Requested floor: #"+floorNumber);
+        if (floorNumber > this.currentFloor) {
            this.direction = "up";
            Console.WriteLine("Elevator "+ this.id+ " is at floor # "+ this.currentFloor+ " Direction = "+ this.direction);
            Thread.Sleep(1000);
-           Console.WriteLine("Moving to floor # "+ requestedFloor);
-           while (this.currentFloor < requestedFloor){
+           Console.WriteLine("Moving to floor # "+ floorNumber);
+           while (this.currentFloor < floorNumber){
              this.currentFloor ++;
              Console.WriteLine("Elevator "+ this.id+ " is at floor # "+this.currentFloor);
            }
-        } else if (requestedFloor < this.currentFloor){
+        } else if (floorNumber < this.currentFloor){
            this.direction = "down";
            Console.WriteLine("Elevator "+ this.id+ " is at floor # "+ this.currentFloor+ " Direction = "+ this.direction);
            Thread.Sleep(1000);
-           Console.WriteLine("Moving to floor # "+ requestedFloor);
-           while (this.currentFloor > requestedFloor){
+           Console.WriteLine("Moving to floor # "+ floorNumber);
+           while (this.currentFloor > floorNumber){
               this.currentFloor --;
               Console.WriteLine("Elevator "+ this.id+ " is at floor # "+ this.currentFloor);
            }
         }
-        if (this.currentFloor == requestedFloor){
+        if (this.currentFloor == floorNumber){
           Console.WriteLine("Elevator stopped");
           Thread.Sleep(1000);
           Console.WriteLine("Elevator "+ this.id+ " arrived at target floor");
@@ -167,15 +181,15 @@ namespace Rocket_Elevators_Controllers
         }
       }//CLosing requestFloor
 
-      public void moveElevator(int requestedFloor)
+      public void moveElevator(int floorNumber)
       {
-      if(requestedFloor > this.currentFloor){
+      if(floorNumber > this.currentFloor){
         this.direction = "up";
         Console.WriteLine("Elevator "+ this.id+ " at floor #"+ this.currentFloor+ " direction is " + this.direction);
-        while (this.currentFloor < requestedFloor){
+        while (this.currentFloor < floorNumber){
           this.currentFloor ++;
           Console.WriteLine("Elevator "+ this.id+ " is at floor #"+ this.currentFloor);
-          if (this.currentFloor == requestedFloor){
+          if (this.currentFloor == floorNumber){
             Console.WriteLine("Elevator stopped");
             Thread.Sleep(1000);
             Console.WriteLine("Elevator "+ this.id+ " arrived to target floor");
@@ -185,14 +199,16 @@ namespace Rocket_Elevators_Controllers
             Console.WriteLine("Person enters the elevator");
             Thread.Sleep(1000);
             Console.WriteLine("Closing doors...");
-
-          }else if (requestedFloor < this.currentFloor){
+        
+          }
+               }
+             }else if (floorNumber < this.currentFloor){
              this.direction = "down";
              Console.WriteLine("Elevator "+this.id+ " at floor #"+ this.currentFloor+ " direction is "+ this.direction);
-             while (this.currentFloor > requestedFloor){
+             while (this.currentFloor > floorNumber){
                this.currentFloor--;
                Console.WriteLine("Elevator "+this.id+ " is at floor #"+this.currentFloor);
-               if (this.currentFloor == requestedFloor){
+               if (this.currentFloor == floorNumber){
                  Console.WriteLine("Elevator stopped");
                  Thread.Sleep(1000);
                  Console.WriteLine("Elevator "+ this.id+ " arrived to target floor");
@@ -202,8 +218,6 @@ namespace Rocket_Elevators_Controllers
                  Console.WriteLine("Person enters the elevator");
                  Thread.Sleep(1000);
                  Console.WriteLine("Closing doors...");
-               }
-             }
           }
 
         }
@@ -246,29 +260,30 @@ namespace Rocket_Elevators_Controllers
             col2.createElevsInCol(5);
             col3.createElevsInCol(5);
             col4.createElevsInCol(5);
+            
 
             //****************Testing Section***************
-            //Scenario 1 - NOT WORKING YET
-           /* 
+            //Scenario 1 - WORKING PROPERLY
+           /*
             Console.WriteLine("Scenario 1 - call from floor # 1 should send elevator 5");
-	          col1.listOfElevators[0].currentFloor = 20;
-	          col1.listOfElevators[0].direction = "down";
-	          col1.listOfElevators[1].currentFloor = 3;
-	          col1.listOfElevators[1].direction = "up";
-	          col1.listOfElevators[1].nextFloor = 15;
-	          col1.listOfElevators[2].currentFloor = 13;
-	          col1.listOfElevators[2].direction = "down";
-	          col1.listOfElevators[2].nextFloor = 1;
-	          col1.listOfElevators[3].currentFloor = 15;
-	          col1.listOfElevators[3].direction = "down";
-	          col1.listOfElevators[4].currentFloor = 6;
-	          col1.listOfElevators[4].direction = "down";
-	          col1.listOfElevators[4].nextFloor = 1;
-	          col1.requestElevator(1, "down");
-            Console.WriteLine("End");
-           */
+	          col2.listOfElevators[0].currentFloor = 20;
+	          col2.listOfElevators[0].direction = "down";
+	          col2.listOfElevators[1].currentFloor = 3;
+	          col2.listOfElevators[1].direction = "up";
+	          col2.listOfElevators[1].nextFloor = 15;
+	          col2.listOfElevators[2].currentFloor = 13;
+	          col2.listOfElevators[2].direction = "down";
+	          col2.listOfElevators[2].nextFloor = 1;
+	          col2.listOfElevators[3].currentFloor = 15;
+	          col2.listOfElevators[3].direction = "down";
+	          col2.listOfElevators[4].currentFloor = 6;
+	          col2.listOfElevators[4].direction = "down";
+	          col2.listOfElevators[4].nextFloor = 1;
+	          col2.requestElevator(1, "up");
+           */ 
+           
            //***************************************************
-           //scenario 2 - WORKING PROPERLY
+           //scenario 2 - WORKING PROPERLY - same floor
            /*
             col3.listOfElevators[0].currentFloor = 1;
             col3.listOfElevators[0].direction = "up";
@@ -284,8 +299,8 @@ namespace Rocket_Elevators_Controllers
            */
 
            //***************************************************
-           //Scenario 3 - not workin properly
-           
+           //Scenario 3 - WORKING PROPERLY
+           /*
             col4.listOfElevators[0].currentFloor = 58;
             col4.listOfElevators[0].direction = "down";
             col4.listOfElevators[1].currentFloor = 50;
@@ -297,10 +312,10 @@ namespace Rocket_Elevators_Controllers
             col4.listOfElevators[4].currentFloor = 60;
             col4.listOfElevators[4].direction = "down";
             col4.requestElevator(54, "down");
-           
+           */
           //***************************************************
           //Scenario 4 - WORKING PROPERLY
-          /*
+           void scneario4(){
             col1.listOfElevators[0].currentFloor = -4;
 	          col1.listOfElevators[0].state = "idle";
 	          col1.listOfElevators[1].currentFloor = 1;
@@ -312,10 +327,17 @@ namespace Rocket_Elevators_Controllers
 	          col1.listOfElevators[4].currentFloor = -1;
 	          col1.listOfElevators[4].direction = "down";
 	          col1.requestElevator(-3, "up");
-           */
+           };
+           scneario4();
           //***************************************************
+            
+          //Tests requestFloor method
+          //col1.listOfElevators[2].currentFloor = 1;
+          //col1.listOfElevators[2].requestFloor(5); 
 
-          //       
+          //col1.listOfElevators[2].currentFloor = 10;
+          //col1.listOfElevators[2].requestFloor(5); 
+
             
         }
       
