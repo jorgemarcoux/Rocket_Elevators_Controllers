@@ -5,6 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "CodeLens (Launch) - commercialAlgo",
+            "request": "launch",
+            "mainClass": "commercialAlgo",
+            "projectName": "Rocket_Elevators_Controllers_96b32437"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Battery",
+            "request": "launch",
+            "mainClass": "Battery",
+            "projectName": "Rocket_Elevators_Controllers_96b32437"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - battery",
+            "request": "launch",
+            "mainClass": "battery",
+            "projectName": "Rocket_Elevators_Controllers_96b32437"
+        },
+        {
             "name": ".NET Core Launch (console)",
             "type": "coreclr",
             "request": "launch",
@@ -15,7 +36,6 @@
             "stopAtEntry": false,
             "console": "internalConsole"
         },
-
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
@@ -29,8 +49,6 @@
             "mode": "debug",
             "program": "${workspaceRoot}"
         },
-    
-    
         {
             "name": "Python : Fichier actuel",
             "type": "python",

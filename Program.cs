@@ -104,7 +104,7 @@ namespace Rocket_Elevators_Controllers
              this.getSmallerFloorsGap(this.elevatorsGoingDown,floorNumber);
              Console.WriteLine("Scenario - call from floor # "+ floorNumber+ " going "+ direction);
              Console.WriteLine("Elevator "+this.chosenElevator.id+ " is sent");
-             this.elevatorsGoingDown[0].moveElevator(floorNumber);
+             this.chosenElevator.moveElevator(floorNumber);
              
 
           }else if(i == 4 && this.elevToNextFloor.Count > 0){
@@ -180,6 +180,7 @@ namespace Rocket_Elevators_Controllers
         }
       }//CLosing requestFloor
 
+      //Method to move elvator to requested floor
       public void moveElevator(int floorNumber)
       {
       if(floorNumber > this.currentFloor){
@@ -230,26 +231,12 @@ namespace Rocket_Elevators_Controllers
 
 
 
-
-
-
-
-   
-
-
-
-
-
-
-
-
-
     class Program
     {
         static void Main(string[] args)
         {
             //Creating battery and columns 
-            Battery bat = new Battery(1,4, new Column[5]);
+            Battery bat = new Battery(1,4, new Column[4]);
             Column col1 = new Column(1,7,-6,1,new Elevator[5]);
             Column col2 = new Column(2,20,1,20,new Elevator[5]);
             Column col3 = new Column(3,21,1,40,new Elevator[5]);
@@ -314,7 +301,7 @@ namespace Rocket_Elevators_Controllers
            */
           //***************************************************
           //Scenario 4 - WORKING PROPERLY
-           
+           /*
             col1.listOfElevators[0].currentFloor = -4;
 	          col1.listOfElevators[0].state = "idle";
 	          col1.listOfElevators[1].currentFloor = 1;
@@ -327,7 +314,7 @@ namespace Rocket_Elevators_Controllers
 	          col1.listOfElevators[4].direction = "down";
 	          col1.requestElevator(-3, "up");
            
-           
+           */
           //***************************************************
             
           //Tests requestFloor method
